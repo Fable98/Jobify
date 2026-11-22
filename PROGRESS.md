@@ -7,7 +7,8 @@
 - [x] **Phase 3: Auth + sessions + RBAC middleware**
 - [x] **Phase 4: Companies + members**
 - [x] **Phase 5: Jobs + search**
-- [ ] **Phase 6: Files**
+- [x] **Phase 6: Files**
+- [ ] **Phase 7: Applications + saved jobs**
 - [ ] **Phase 5: Jobs + search**
 - [ ] **Phase 6: Files**
 - [ ] **Phase 7: Applications + saved jobs**
@@ -135,6 +136,28 @@
   - `npm run typecheck`: Passed
   - `npm run lint`: Passed (0 warnings, 0 errors)
   - `npm test`: 41 tests passed across 4 test suites (health, auth, companies, jobs)
+
+### Phase 6: Files
+- Status: **COMPLETED**
+- Implemented StorageProvider interface (`save`, `stream`, `delete`) and `LocalStorageProvider` keeping files strictly outside the public web root (`backend/uploads/`).
+- Documented S3-compatible cloud storage integration in `backend/src/modules/files/storage.ts`.
+- Implemented strict PDF validation:
+  - File extension check (`.pdf`).
+  - True file signature inspection using magic bytes (`%PDF` at byte offset 0), rejecting spoofed MIME types.
+  - Size limitation capped strictly at 5 MB (`FILE_TOO_LARGE`, 400).
+  - Secure random UUID storage keys preventing file path traversal or predictable naming.
+- Implemented strictly authorized streaming endpoint `GET /api/v1/files/:id`:
+  - Requester must be file owner, company recruiter/owner with an application using that file, or platform admin.
+  - Sends security headers `X-Content-Type-Options: nosniff`, `Content-Type: application/pdf`, and sanitized `Content-Disposition`.
+- Endpoints implemented:
+  - `POST /api/v1/files/resume`: PDF resume upload with optional default setting
+  - `GET /api/v1/files/:id`: authorized secure file stream
+  - `DELETE /api/v1/files/:id`: delete file (blocked if linked to active applications)
+- Command validation:
+  - `npm run typecheck`: Passed
+  - `npm run lint`: Passed (0 warnings, 0 errors)
+  - `npm test`: 49 tests passed across 5 test suites (health, auth, companies, jobs, files)
+
 
 
 
