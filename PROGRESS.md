@@ -8,7 +8,8 @@
 - [x] **Phase 4: Companies + members**
 - [x] **Phase 5: Jobs + search**
 - [x] **Phase 6: Files**
-- [ ] **Phase 7: Applications + saved jobs**
+- [x] **Phase 7: Applications + saved jobs**
+- [ ] **Phase 8: Stats + admin APIs**
 - [ ] **Phase 5: Jobs + search**
 - [ ] **Phase 6: Files**
 - [ ] **Phase 7: Applications + saved jobs**
@@ -157,6 +158,30 @@
   - `npm run typecheck`: Passed
   - `npm run lint`: Passed (0 warnings, 0 errors)
   - `npm test`: 49 tests passed across 5 test suites (health, auth, companies, jobs, files)
+
+### Phase 7: Applications + saved jobs
+- Status: **COMPLETED**
+- Implemented full application lifecycle state machine:
+  - Allowed forward transitions: `PENDING -> REVIEWING | REJECTED`, `REVIEWING -> SHORTLISTED | REJECTED`, `SHORTLISTED -> ACCEPTED | REJECTED`.
+  - Terminal statuses: `ACCEPTED`, `REJECTED`, `WITHDRAWN` (immutable from subsequent employer edits).
+  - Employer restriction: employers cannot set status to `WITHDRAWN`.
+  - Seeker withdrawal: applicants can withdraw only from `PENDING`, `REVIEWING`, or `SHORTLISTED`.
+  - Gated application rules: apply only to `PUBLISHED` jobs; apply before deadline; once per job per applicant (`jobId_applicantId` unique constraint); applicant cannot apply to jobs of their own company; applicants must supply their own uploaded resume.
+- Implemented Saved Jobs module with unique bookmarks and fast bookmark lookup.
+- Endpoints implemented:
+  - `POST /api/v1/jobs/:jobId/apply`: apply to job
+  - `GET /api/v1/applications/my`: seeker's applications list
+  - `GET /api/v1/applications/:id`: get application details (owner/employer/admin)
+  - `PATCH /api/v1/applications/:id/withdraw`: withdraw application
+  - `GET /api/v1/employer/applications`: list candidate applications with status filters & pagination
+  - `PATCH /api/v1/employer/applications/:id/status`: transition applicant status
+  - `POST /api/v1/saved-jobs` & `DELETE /api/v1/saved-jobs/:jobId`: save & unsave jobs
+  - `GET /api/v1/saved-jobs`: list saved jobs
+- Command validation:
+  - `npm run typecheck`: Passed
+  - `npm run lint`: Passed (0 warnings, 0 errors)
+  - `npm test`: 65 tests passed across 6 test suites (health, auth, companies, jobs, files, applications)
+
 
 
 
