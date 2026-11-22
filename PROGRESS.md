@@ -216,28 +216,21 @@
 
 
 
-### Phase 7: Applications + saved jobs
+### Phase 11: Employer dashboard
 - Status: **COMPLETED**
-- Implemented full application lifecycle state machine:
-  - Allowed forward transitions: `PENDING -> REVIEWING | REJECTED`, `REVIEWING -> SHORTLISTED | REJECTED`, `SHORTLISTED -> ACCEPTED | REJECTED`.
-  - Terminal statuses: `ACCEPTED`, `REJECTED`, `WITHDRAWN` (immutable from subsequent employer edits).
-  - Employer restriction: employers cannot set status to `WITHDRAWN`.
-  - Seeker withdrawal: applicants can withdraw only from `PENDING`, `REVIEWING`, or `SHORTLISTED`.
-  - Gated application rules: apply only to `PUBLISHED` jobs; apply before deadline; once per job per applicant (`jobId_applicantId` unique constraint); applicant cannot apply to jobs of their own company; applicants must supply their own uploaded resume.
-- Implemented Saved Jobs module with unique bookmarks and fast bookmark lookup.
-- Endpoints implemented:
-  - `POST /api/v1/jobs/:jobId/apply`: apply to job
-  - `GET /api/v1/applications/my`: seeker's applications list
-  - `GET /api/v1/applications/:id`: get application details (owner/employer/admin)
-  - `PATCH /api/v1/applications/:id/withdraw`: withdraw application
-  - `GET /api/v1/employer/applications`: list candidate applications with status filters & pagination
-  - `PATCH /api/v1/employer/applications/:id/status`: transition applicant status
-  - `POST /api/v1/saved-jobs` & `DELETE /api/v1/saved-jobs/:jobId`: save & unsave jobs
-  - `GET /api/v1/saved-jobs`: list saved jobs
+- Implemented full employer recruiting suite under `/employer`:
+  - `/employer/dashboard`: Employer metrics overview consuming `GET /api/v1/stats/employer` (active postings, total applicants, shortlisted count, pending reviews), company verification status banner, and quick actions.
+  - `/employer/jobs`: Listings management table with live status pills (DRAFT, PUBLISHED, CLOSED), applicant counts, direct publish/close transitions (`PATCH /api/v1/jobs/:id`), and draft deletion (`DELETE /api/v1/jobs/:id`).
+  - `/employer/jobs/new`: Comprehensive job creation form using React Hook Form and Zod validation (title, employment type, experience level, location, salary range with currency, application deadline, responsibilities, requirements).
+  - `/employer/applications`: Interactive Kanban-style candidate pipeline board grouped by pipeline stage (`PENDING`, `REVIEWING`, `SHORTLISTED`, `ACCEPTED`, `REJECTED`). Features real-time state machine transitions, inline candidate details, resume view links, and stage progression actions.
+  - `/employer/company`: Company profile settings (name, description, industry, location, website, logo URL) and member management panel (invite new recruiters/owners via email, remove members with last-owner protection).
 - Command validation:
   - `npm run typecheck`: Passed
   - `npm run lint`: Passed (0 warnings, 0 errors)
-  - `npm test`: 65 tests passed across 6 test suites (health, auth, companies, jobs, files, applications)
+  - `npm test`: 73 tests passed across 7 test suites
+  - `npm run build:frontend`: Production build generated 17 static & dynamic routes cleanly
+
+
 
 
 
