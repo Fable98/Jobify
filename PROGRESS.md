@@ -244,6 +244,23 @@
   - `npm test`: 73 tests passed across 7 test suites (health, auth, companies, jobs, files, applications, admin)
   - `npm run build:frontend`: Production build generated 21 static & dynamic routes cleanly
 
+### Phase 13: Backend tests complete
+- Status: **COMPLETED**
+- Completed and audited full backend test suite covering all modules and security requirements in Section 9:
+  - `health.test.ts`: Service availability and database ping (1 test).
+  - `auth.test.ts`: CSRF validation, register with strict role restrictions, duplicate email rejection, session cookie issuance (HttpOnly, SameSite=Lax), constant-time credential verification, login failure path masking, suspended account rejection, session invalidation on logout (13 tests).
+  - `companies.test.ts`: Organization creation, member role assignment (OWNER, RECRUITER), last-owner protection rule against deletion and demotion, unverified company isolation, permission checks (12 tests).
+  - `jobs.test.ts`: Public search engine, keyword search, experience level filters, salary range overlap matching, pagination meta, unverified company publishing block, 404 leak prevention for unpublished jobs, draft deletion vs blocked deletion when applications exist (15 tests).
+  - `files.test.ts`: PDF upload validation, file extension check, magic bytes `%PDF` inspection, 5MB file size limit, authorized streaming permissions (owner, employer of applicant, admin), unauthorized download rejection (8 tests).
+  - `applications.test.ts`: Finite state transitions (`PENDING -> REVIEWING -> SHORTLISTED -> ACCEPTED/REJECTED`), terminal state protection, duplicate apply prevention, past deadline rejection, seeker application withdrawal, saved jobs bookmarking and idempotent unsave (16 tests).
+  - `admin.test.ts`: Platform stats telemetry, company verification granting job publishing permissions, job moderation hiding/restoring listings, user suspension terminating active sessions, read-only applications monitor (8 tests).
+  - `users.test.ts`: Profile management (`GET/PATCH /users/me`), technical skills tag persistence, privilege escalation prevention (ignored role/status injections in request body), role-restricted stats endpoints (`/stats/job-seeker` and `/stats/employer`) (7 tests).
+- Command validation:
+  - `npm run typecheck`: Passed cleanly across all workspaces
+  - `npm run lint`: Passed with 0 errors and 0 warnings
+  - `npm test`: 80 tests passed across 8 test suites in ~3.2s
+
+
 
 
 
