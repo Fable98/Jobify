@@ -9,6 +9,7 @@ import { authRouter } from './modules/auth/auth.routes';
 import { usersRouter } from './modules/users/users.routes';
 import { companiesRouter } from './modules/companies/companies.routes';
 import { jobsRouter } from './modules/jobs/jobs.routes';
+import { filesRouter } from './modules/files/files.routes';
 import { jobsController } from './modules/jobs/jobs.controller';
 import { requireAuth, requireRole } from './middleware/auth';
 import { Role } from '@prisma/client';
@@ -42,6 +43,7 @@ app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/companies', companiesRouter);
 app.use('/api/v1/jobs', jobsRouter);
+app.use('/api/v1/files', filesRouter);
 
 // Section 5 alias: GET /employer/jobs
 app.get(
