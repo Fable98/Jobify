@@ -59,12 +59,12 @@ export function JobCard({ job, initialSaved = false }: JobCardProps) {
   const salaryString = formatSalary(job.salaryMin, job.salaryMax);
 
   return (
-    <div className="group relative flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-5 sm:p-6 shadow-sm hover:border-brand-300 hover:shadow-md transition-all duration-200">
+    <article className="group relative flex flex-col justify-between rounded-3xl border border-[#E2E6EC] bg-white p-6 shadow-clay-2 hover:shadow-clay-3 hover:border-[#9FE3C8] transition-all duration-300">
       <div>
         {/* Header: Company & Bookmark */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="flex h-11 w-11 items-center justify-center rounded-lg bg-slate-100 text-slate-700 font-bold text-sm border border-slate-200 overflow-hidden">
+            <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-[#EFF1F5] text-slate-700 font-bold text-sm border border-[#E2E6EC] shadow-clay-inset overflow-hidden shrink-0">
               {job.company.logoUrl ? (
                 <img
                   src={job.company.logoUrl}
@@ -79,17 +79,17 @@ export function JobCard({ job, initialSaved = false }: JobCardProps) {
               <div className="flex items-center gap-1.5">
                 <Link
                   href={`/companies/${job.company.slug || job.company.id}`}
-                  className="text-xs font-semibold text-slate-700 hover:text-brand-600 transition-colors"
+                  className="text-xs font-semibold text-slate-700 hover:text-[#289E73] transition-colors"
                 >
                   {job.company.name}
                 </Link>
                 {job.company.verified && (
                   <span title="Verified Company">
-                    <CheckCircle2 className="h-3.5 w-3.5 text-emerald-500 flex-shrink-0" />
+                    <CheckCircle2 className="h-3.5 w-3.5 text-[#289E73] flex-shrink-0" />
                   </span>
                 )}
               </div>
-              <h3 className="text-base sm:text-lg font-bold text-slate-900 font-heading group-hover:text-brand-600 transition-colors mt-0.5 line-clamp-1">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 font-heading group-hover:text-[#289E73] transition-colors mt-0.5 line-clamp-1">
                 <Link href={`/jobs/${job.id}`}>
                   {job.title}
                 </Link>
@@ -100,35 +100,35 @@ export function JobCard({ job, initialSaved = false }: JobCardProps) {
           <button
             onClick={toggleSave}
             disabled={isSaving}
-            className={`flex h-9 w-9 items-center justify-center rounded-lg border transition-colors ${
+            className={`flex h-9 w-9 items-center justify-center rounded-full border transition-all ${
               isSaved
-                ? 'border-brand-200 bg-brand-50 text-brand-600'
-                : 'border-slate-200 text-slate-400 hover:border-slate-300 hover:text-slate-600 hover:bg-slate-50'
+                ? 'border-[#85DAB9] bg-[#E1F5EC] text-[#1F7D5C] shadow-clay-1'
+                : 'border-[#E2E6EC] bg-white text-slate-400 shadow-clay-1 hover:border-[#9FE3C8] hover:text-slate-600'
             }`}
             title={isSaved ? 'Remove from saved' : 'Save job'}
             aria-label={isSaved ? 'Remove from saved' : 'Save job'}
           >
-            <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-brand-600' : ''}`} />
+            <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-[#1F7D5C]' : ''}`} />
           </button>
         </div>
 
-        {/* Location & Tags */}
-        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs text-slate-600">
-          <span className="inline-flex items-center gap-1 rounded-md bg-slate-100 px-2.5 py-1 font-medium text-slate-700">
+        {/* Location & Tags (Pill Capsules) */}
+        <div className="mt-4 flex flex-wrap items-center gap-2 text-xs">
+          <span className="inline-flex items-center gap-1 rounded-full bg-slate-100 border border-slate-200/80 px-3 py-1 font-medium text-slate-700">
             <MapPin className="h-3.5 w-3.5 text-slate-400" />
             {job.location}
           </span>
 
-          <span className="rounded-md bg-indigo-50 px-2.5 py-1 font-medium text-brand-700 border border-brand-100">
+          <span className="rounded-full bg-[#E1F5EC] border border-[#C3EBDA] px-3 py-1 font-semibold text-[#1F7D5C]">
             {job.employmentType.replace('_', ' ')}
           </span>
 
-          <span className="rounded-md bg-slate-100 px-2.5 py-1 font-medium text-slate-700">
+          <span className="rounded-full bg-slate-100 border border-slate-200/80 px-3 py-1 font-medium text-slate-700">
             {job.experienceLevel}
           </span>
 
           {salaryString && (
-            <span className="inline-flex items-center gap-0.5 rounded-md bg-emerald-50 px-2.5 py-1 font-semibold text-emerald-700 border border-emerald-100">
+            <span className="inline-flex items-center gap-0.5 rounded-full bg-[#FEF3C7] border border-[#FDE68A] px-3 py-1 font-semibold text-[#92400E]">
               <DollarSign className="h-3 w-3" />
               {salaryString}
             </span>
@@ -136,7 +136,7 @@ export function JobCard({ job, initialSaved = false }: JobCardProps) {
         </div>
 
         {/* Short description snippet */}
-        <p className="mt-3 text-xs sm:text-sm text-slate-500 line-clamp-2 leading-relaxed">
+        <p className="mt-3.5 text-xs sm:text-sm text-slate-500 line-clamp-2 leading-relaxed">
           {job.description}
         </p>
       </div>
@@ -150,11 +150,11 @@ export function JobCard({ job, initialSaved = false }: JobCardProps) {
         </span>
         <Link
           href={`/jobs/${job.id}`}
-          className="text-xs font-semibold text-brand-600 hover:text-brand-700 group-hover:translate-x-0.5 transition-transform inline-flex items-center gap-1"
+          className="inline-flex items-center gap-1 rounded-full bg-[#9FE3C8] text-[#0B2D22] font-semibold px-4 py-1.5 text-xs shadow-clay-btn hover:bg-[#8DE0C2] hover:shadow-clay-btn-hover transition-all"
         >
           View Position &rarr;
         </Link>
       </div>
-    </div>
+    </article>
   );
 }

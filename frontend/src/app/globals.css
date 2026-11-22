@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 :root {
-  --background: #f8fafc;
+  --background: #f7f8fa;
   --foreground: #0f172a;
 }
 
@@ -11,6 +11,59 @@ body {
   color: var(--foreground);
   background: var(--background);
   font-feature-settings: 'cv02', 'cv03', 'cv04', 'cv11';
+}
+
+/* Subtle architectural grid pattern matching the styleguide paper background */
+.bg-grid-pattern {
+  background-size: 32px 32px;
+  background-image: 
+    linear-gradient(to right, rgba(226, 230, 236, 0.45) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(226, 230, 236, 0.45) 1px, transparent 1px);
+}
+
+/* Neumorphic & Soft UI Component Classes from Styleguide */
+@layer components {
+  /* Pill Button - Primary Action */
+  .btn-clay-primary {
+    @apply inline-flex items-center justify-center rounded-full bg-[#9FE3C8] text-[#0B2D22] font-semibold px-6 py-2.5 shadow-clay-btn hover:bg-[#8DE0C2] hover:shadow-clay-btn-hover active:scale-[0.98] border border-[#85DAB9] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#289E73] focus-visible:ring-offset-2;
+  }
+
+  /* Pill Button - Surface / Secondary Action */
+  .btn-clay-secondary {
+    @apply inline-flex items-center justify-center rounded-full bg-white text-slate-700 font-semibold px-6 py-2.5 shadow-clay-1 hover:bg-slate-50 hover:shadow-clay-2 active:scale-[0.98] border border-[#E2E6EC] transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#9FE3C8] focus-visible:ring-offset-2;
+  }
+
+  /* Recessed Concave Input Pill */
+  .input-clay-pill {
+    @apply w-full rounded-full bg-[#EFF1F5] border border-[#E2E6EC] shadow-clay-inset px-5 py-2.5 text-sm text-slate-800 placeholder-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9FE3C8] focus:border-[#74D4B1] transition-all duration-200;
+  }
+
+  /* Soft Tactile Card */
+  .card-clay {
+    @apply rounded-3xl bg-white border border-[#E2E6EC] shadow-clay-2 hover:shadow-clay-3 transition-all duration-300;
+  }
+
+  /* Filter Chip - Default & Selected */
+  .chip-clay-default {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-white border border-[#E2E6EC] px-4 py-1.5 text-xs font-medium text-slate-600 shadow-clay-1 hover:border-[#9FE3C8] hover:text-slate-900 transition-all;
+  }
+
+  .chip-clay-selected {
+    @apply inline-flex items-center gap-1.5 rounded-full bg-[#9FE3C8]/40 border border-[#42C093] px-4 py-1.5 text-xs font-semibold text-[#0B2D22] shadow-clay-btn transition-all;
+  }
+
+  /* Alert Pills matching the Styleguide */
+  .alert-clay-success {
+    @apply inline-flex items-center gap-2 rounded-full bg-[#C3EBDA]/60 border border-[#74D4B1] px-4 py-2 text-xs font-medium text-[#0B2D22] shadow-clay-1;
+  }
+
+  .alert-clay-warning {
+    @apply inline-flex items-center gap-2 rounded-full bg-[#FEF3C7] border border-[#FDE68A] px-4 py-2 text-xs font-medium text-[#92400E] shadow-clay-1;
+  }
+
+  .alert-clay-error {
+    @apply inline-flex items-center gap-2 rounded-full bg-[#FEE2E2] border border-[#FCA5A5] px-4 py-2 text-xs font-medium text-[#991B1B] shadow-clay-1;
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {

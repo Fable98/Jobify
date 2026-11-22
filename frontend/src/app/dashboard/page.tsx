@@ -37,7 +37,7 @@ export default function SeekerDashboardOverview() {
     return (
       <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 animate-pulse">
         {[...Array(4)].map((_, i) => (
-          <div key={i} className="h-28 rounded-2xl bg-slate-200" />
+          <div key={i} className="h-28 rounded-3xl bg-slate-200" />
         ))}
       </div>
     );
@@ -60,13 +60,13 @@ export default function SeekerDashboardOverview() {
       title: 'Shortlisted',
       value: stats?.shortlistedCount ?? 0,
       icon: TrendingUp,
-      color: 'text-brand-600 bg-brand-50 border-brand-100',
+      color: 'text-[#1F7D5C] bg-[#E1F5EC] border-[#C3EBDA]',
     },
     {
       title: 'Offers / Accepted',
       value: stats?.acceptedCount ?? 0,
       icon: CheckCircle2,
-      color: 'text-emerald-600 bg-emerald-50 border-emerald-100',
+      color: 'text-emerald-700 bg-emerald-50 border-emerald-100',
     },
   ];
 
@@ -79,11 +79,11 @@ export default function SeekerDashboardOverview() {
           return (
             <div
               key={card.title}
-              className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm"
+              className="rounded-3xl border border-[#E2E6EC] bg-white p-5 shadow-clay-2 hover:shadow-clay-3 transition-all"
             >
               <div className="flex items-center justify-between">
                 <span className="text-xs font-semibold text-slate-500">{card.title}</span>
-                <div className={`flex h-8 w-8 items-center justify-center rounded-lg border ${card.color}`}>
+                <div className={`flex h-9 w-9 items-center justify-center rounded-2xl border shadow-clay-1 ${card.color}`}>
                   <Icon className="h-4 w-4" />
                 </div>
               </div>
@@ -96,21 +96,21 @@ export default function SeekerDashboardOverview() {
       </div>
 
       {/* Pipeline Status Breakdown */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-3xl border border-[#E2E6EC] bg-white p-6 shadow-clay-2">
         <h2 className="text-base font-bold text-slate-900 font-heading mb-4">
           Application Funnel Status
         </h2>
 
         <div className="grid grid-cols-2 sm:grid-cols-6 gap-3">
           {[
-            { label: 'Pending', count: stats?.applicationsByStatus?.PENDING ?? 0, bg: 'bg-slate-50 text-slate-700' },
+            { label: 'Pending', count: stats?.applicationsByStatus?.PENDING ?? 0, bg: 'bg-[#EFF1F5] text-slate-700' },
             { label: 'Reviewing', count: stats?.applicationsByStatus?.REVIEWING ?? 0, bg: 'bg-blue-50 text-blue-700' },
-            { label: 'Shortlisted', count: stats?.applicationsByStatus?.SHORTLISTED ?? 0, bg: 'bg-indigo-50 text-indigo-700' },
+            { label: 'Shortlisted', count: stats?.applicationsByStatus?.SHORTLISTED ?? 0, bg: 'bg-[#E1F5EC] text-[#1F7D5C]' },
             { label: 'Accepted', count: stats?.applicationsByStatus?.ACCEPTED ?? 0, bg: 'bg-emerald-50 text-emerald-700' },
             { label: 'Rejected', count: stats?.applicationsByStatus?.REJECTED ?? 0, bg: 'bg-rose-50 text-rose-700' },
-            { label: 'Withdrawn', count: stats?.applicationsByStatus?.WITHDRAWN ?? 0, bg: 'bg-slate-50 text-slate-500' },
+            { label: 'Withdrawn', count: stats?.applicationsByStatus?.WITHDRAWN ?? 0, bg: 'bg-[#EFF1F5] text-slate-500' },
           ].map((item) => (
-            <div key={item.label} className={`rounded-xl p-3 text-center border border-slate-200/60 ${item.bg}`}>
+            <div key={item.label} className={`rounded-2xl p-3 text-center border border-[#E2E6EC] shadow-clay-1 ${item.bg}`}>
               <div className="text-lg font-extrabold">{item.count}</div>
               <div className="text-[11px] font-semibold mt-0.5">{item.label}</div>
             </div>
@@ -119,14 +119,14 @@ export default function SeekerDashboardOverview() {
       </div>
 
       {/* Recent Applications Preview */}
-      <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <div className="rounded-3xl border border-[#E2E6EC] bg-white p-6 shadow-clay-2">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-base font-bold text-slate-900 font-heading">
             Recent Applications
           </h2>
           <Link
             href="/dashboard/applications"
-            className="text-xs font-semibold text-brand-600 hover:text-brand-700"
+            className="text-xs font-semibold text-[#289E73] hover:underline"
           >
             View all &rarr;
           </Link>
@@ -143,11 +143,11 @@ export default function SeekerDashboardOverview() {
 
                 <div className="flex items-center gap-3">
                   <span
-                    className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${
+                    className={`rounded-full px-3 py-1 text-[11px] font-bold shadow-clay-1 ${
                       app.status === 'ACCEPTED'
                         ? 'bg-emerald-50 text-emerald-700 border border-emerald-200'
                         : app.status === 'SHORTLISTED'
-                        ? 'bg-indigo-50 text-brand-700 border border-brand-200'
+                        ? 'bg-[#E1F5EC] text-[#1F7D5C] border border-[#C3EBDA]'
                         : app.status === 'REJECTED'
                         ? 'bg-red-50 text-red-700 border border-red-200'
                         : app.status === 'WITHDRAWN'
@@ -167,7 +167,7 @@ export default function SeekerDashboardOverview() {
         ) : (
           <div className="text-center py-8 text-xs text-slate-500">
             No applications submitted yet.{' '}
-            <Link href="/jobs" className="text-brand-600 font-semibold underline">
+            <Link href="/jobs" className="text-[#289E73] font-semibold underline">
               Browse jobs to apply.
             </Link>
           </div>

@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Search, MapPin, X, SlidersHorizontal } from 'lucide-react';
+import { Search, MapPin, X, SlidersHorizontal, Check } from 'lucide-react';
 import { EmploymentType, ExperienceLevel } from '@/lib/types';
 
 interface JobFiltersProps {
@@ -64,60 +64,62 @@ export function JobFilters({
     Boolean(maxSalary);
 
   return (
-    <div className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm space-y-6">
+    <div className="rounded-3xl border border-[#E2E6EC] bg-white p-6 shadow-clay-2 space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-slate-100">
         <div className="flex items-center gap-2">
-          <SlidersHorizontal className="h-4 w-4 text-brand-600" />
-          <h2 className="text-sm font-bold uppercase tracking-wider text-slate-800 font-heading">
+          <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#E1F5EC] text-[#289E73]">
+            <SlidersHorizontal className="h-3.5 w-3.5" />
+          </div>
+          <h2 className="text-xs font-bold uppercase tracking-wider text-slate-800 font-heading">
             Filter Jobs
           </h2>
         </div>
         {hasActiveFilters && (
           <button
             onClick={onReset}
-            className="inline-flex items-center gap-1 text-xs font-semibold text-brand-600 hover:text-brand-700"
+            className="inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold text-[#289E73] bg-[#E1F5EC] hover:bg-[#C3EBDA] transition-colors"
           >
             <X className="h-3 w-3" /> Reset
           </button>
         )}
       </div>
 
-      {/* Keyword search */}
+      {/* Keyword search (Recessed Concave Pill) */}
       <div>
         <label className="block text-xs font-semibold text-slate-700 mb-1.5">
           Role / Keywords
         </label>
         <div className="relative">
-          <Search className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+          <Search className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="e.g. Full-Stack, React"
-            className="w-full rounded-lg border border-slate-200 bg-slate-50/50 py-2 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full rounded-full bg-[#EFF1F5] border border-[#E2E6EC] shadow-clay-inset py-2.5 pl-10 pr-4 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9FE3C8] focus:border-transparent transition-all"
           />
         </div>
       </div>
 
-      {/* Location */}
+      {/* Location (Recessed Concave Pill) */}
       <div>
         <label className="block text-xs font-semibold text-slate-700 mb-1.5">
           Location
         </label>
         <div className="relative">
-          <MapPin className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+          <MapPin className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
           <input
             type="text"
             value={location}
             onChange={(e) => setLocation(e.target.value)}
             placeholder="e.g. San Francisco, Remote"
-            className="w-full rounded-lg border border-slate-200 bg-slate-50/50 py-2 pl-9 pr-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full rounded-full bg-[#EFF1F5] border border-[#E2E6EC] shadow-clay-inset py-2.5 pl-10 pr-4 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9FE3C8] focus:border-transparent transition-all"
           />
         </div>
       </div>
 
-      {/* Sort By */}
+      {/* Sort By (Pill Select) */}
       <div>
         <label className="block text-xs font-semibold text-slate-700 mb-1.5">
           Sort By
@@ -125,7 +127,7 @@ export function JobFilters({
         <select
           value={sortBy}
           onChange={(e) => setSortBy(e.target.value)}
-          className="w-full rounded-lg border border-slate-200 bg-slate-50/50 py-2 px-3 text-xs text-slate-900 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+          className="w-full rounded-full bg-[#EFF1F5] border border-[#E2E6EC] shadow-clay-inset py-2.5 px-4 text-xs text-slate-800 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9FE3C8] transition-all cursor-pointer"
         >
           <option value="publishedAt">Most Recent</option>
           <option value="salaryMax">Highest Salary</option>
@@ -133,7 +135,7 @@ export function JobFilters({
         </select>
       </div>
 
-      {/* Employment Type */}
+      {/* Employment Type (Tactile Styleguide Chips) */}
       <div>
         <label className="block text-xs font-semibold text-slate-700 mb-2">
           Employment Type
@@ -146,20 +148,21 @@ export function JobFilters({
                 key={t.value}
                 type="button"
                 onClick={() => setEmploymentType(isSelected ? '' : t.value)}
-                className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all ${
                   isSelected
-                    ? 'bg-brand-600 text-white shadow-sm shadow-brand-600/30'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-[#9FE3C8] border border-[#85DAB9] text-[#0B2D22] font-semibold shadow-clay-btn'
+                    : 'bg-white border border-[#E2E6EC] text-slate-600 shadow-clay-1 hover:border-[#9FE3C8] hover:text-slate-900'
                 }`}
               >
-                {t.label}
+                {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
+                <span>{t.label}</span>
               </button>
             );
           })}
         </div>
       </div>
 
-      {/* Experience Level */}
+      {/* Experience Level (Tactile Styleguide Chips) */}
       <div>
         <label className="block text-xs font-semibold text-slate-700 mb-2">
           Experience Level
@@ -172,13 +175,14 @@ export function JobFilters({
                 key={lvl.value}
                 type="button"
                 onClick={() => setExperienceLevel(isSelected ? '' : lvl.value)}
-                className={`rounded-lg px-2.5 py-1.5 text-xs font-medium transition-all ${
+                className={`inline-flex items-center gap-1.5 rounded-full px-3 py-1.5 text-xs font-medium transition-all ${
                   isSelected
-                    ? 'bg-brand-600 text-white shadow-sm shadow-brand-600/30'
-                    : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                    ? 'bg-[#9FE3C8] border border-[#85DAB9] text-[#0B2D22] font-semibold shadow-clay-btn'
+                    : 'bg-white border border-[#E2E6EC] text-slate-600 shadow-clay-1 hover:border-[#9FE3C8] hover:text-slate-900'
                 }`}
               >
-                {lvl.label}
+                {isSelected && <Check className="h-3 w-3 stroke-[3]" />}
+                <span>{lvl.label}</span>
               </button>
             );
           })}
@@ -196,14 +200,14 @@ export function JobFilters({
             value={minSalary}
             onChange={(e) => setMinSalary(e.target.value)}
             placeholder="Min e.g. 100000"
-            className="w-full rounded-lg border border-slate-200 bg-slate-50/50 py-2 px-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full rounded-full bg-[#EFF1F5] border border-[#E2E6EC] shadow-clay-inset py-2 px-3 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9FE3C8] transition-all"
           />
           <input
             type="number"
             value={maxSalary}
             onChange={(e) => setMaxSalary(e.target.value)}
             placeholder="Max e.g. 200000"
-            className="w-full rounded-lg border border-slate-200 bg-slate-50/50 py-2 px-2.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+            className="w-full rounded-full bg-[#EFF1F5] border border-[#E2E6EC] shadow-clay-inset py-2 px-3 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9FE3C8] transition-all"
           />
         </div>
       </div>

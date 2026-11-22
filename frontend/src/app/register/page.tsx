@@ -60,13 +60,13 @@ export default function RegisterPage() {
   };
 
   return (
-    <div className="flex min-h-[calc(100vh-140px)] items-center justify-center px-4 sm:px-6 lg:px-8 py-12">
-      <div className="w-full max-w-md space-y-6 rounded-2xl border border-slate-200 bg-white p-8 sm:p-10 shadow-lg">
+    <div className="flex min-h-[calc(100vh-140px)] items-center justify-center px-4 sm:px-6 lg:px-8 py-12 bg-surface">
+      <div className="w-full max-w-md space-y-6 rounded-3xl border border-[#E2E6EC] bg-white p-8 sm:p-10 shadow-clay-3">
         <div className="text-center">
-          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-brand-600 text-white shadow-md shadow-brand-600/25">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-[#9FE3C8] text-[#0B2D22] border border-[#85DAB9] shadow-clay-btn">
             <Briefcase className="h-6 w-6" />
           </div>
-          <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 font-heading">
+          <h2 className="mt-5 text-2xl font-bold tracking-tight text-slate-900 font-heading">
             Create an Account
           </h2>
           <p className="mt-1 text-xs text-slate-500">
@@ -74,14 +74,14 @@ export default function RegisterPage() {
           </p>
         </div>
 
-        {/* Role toggle tabs */}
-        <div className="grid grid-cols-2 gap-2 rounded-xl bg-slate-100 p-1 text-xs font-semibold">
+        {/* Styleguide Pill Tabs for Role selection */}
+        <div className="grid grid-cols-2 gap-1 rounded-full bg-[#EFF1F5] p-1.5 border border-[#E2E6EC] shadow-clay-inset text-xs font-semibold">
           <button
             type="button"
             onClick={() => setValue('role', 'JOB_SEEKER')}
-            className={`inline-flex items-center justify-center gap-1.5 rounded-lg py-2 transition-all ${
+            className={`inline-flex items-center justify-center gap-1.5 rounded-full py-2 transition-all ${
               selectedRole === 'JOB_SEEKER'
-                ? 'bg-white text-brand-700 shadow-sm'
+                ? 'bg-[#9FE3C8] text-[#0B2D22] font-bold shadow-clay-btn border border-[#85DAB9]'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -92,9 +92,9 @@ export default function RegisterPage() {
           <button
             type="button"
             onClick={() => setValue('role', 'EMPLOYER')}
-            className={`inline-flex items-center justify-center gap-1.5 rounded-lg py-2 transition-all ${
+            className={`inline-flex items-center justify-center gap-1.5 rounded-full py-2 transition-all ${
               selectedRole === 'EMPLOYER'
-                ? 'bg-white text-brand-700 shadow-sm'
+                ? 'bg-[#9FE3C8] text-[#0B2D22] font-bold shadow-clay-btn border border-[#85DAB9]'
                 : 'text-slate-600 hover:text-slate-900'
             }`}
           >
@@ -104,76 +104,79 @@ export default function RegisterPage() {
         </div>
 
         {serverError && (
-          <div className="rounded-xl border border-red-200 bg-red-50 p-3.5 text-xs text-red-700">
+          <div className="rounded-2xl border border-red-200 bg-red-50 p-3.5 text-xs text-red-700 shadow-clay-1">
             {serverError}
           </div>
         )}
 
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
               Full Name
             </label>
-            <input
-              type="text"
-              {...register('name')}
-              placeholder="Alex Rivera"
-              className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 px-3 text-xs text-slate-900 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
-            />
+            <div className="relative">
+              <User className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
+              <input
+                type="text"
+                {...register('name')}
+                placeholder="Alex Rivera"
+                className="w-full rounded-full bg-[#EFF1F5] border border-[#E2E6EC] shadow-clay-inset py-2.5 pl-10 pr-4 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9FE3C8] focus:border-transparent transition-all"
+              />
+            </div>
             {errors.name && (
-              <p className="mt-1 text-[11px] text-red-600">{errors.name.message}</p>
+              <p className="mt-1 text-[11px] text-red-600 pl-3">{errors.name.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
               Email Address
             </label>
             <div className="relative">
-              <Mail className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+              <Mail className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
               <input
                 type="email"
                 {...register('email')}
                 placeholder="name@domain.com"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-9 pr-3 text-xs text-slate-900 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="w-full rounded-full bg-[#EFF1F5] border border-[#E2E6EC] shadow-clay-inset py-2.5 pl-10 pr-4 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9FE3C8] focus:border-transparent transition-all"
               />
             </div>
             {errors.email && (
-              <p className="mt-1 text-[11px] text-red-600">{errors.email.message}</p>
+              <p className="mt-1 text-[11px] text-red-600 pl-3">{errors.email.message}</p>
             )}
           </div>
 
           <div>
-            <label className="block text-xs font-semibold text-slate-700 mb-1">
+            <label className="block text-xs font-semibold text-slate-700 mb-1.5">
               Password
             </label>
             <div className="relative">
-              <Lock className="absolute left-3 top-2.5 h-4 w-4 text-slate-400" />
+              <Lock className="absolute left-3.5 top-3 h-4 w-4 text-slate-400" />
               <input
                 type="password"
                 {...register('password')}
                 placeholder="Minimum 8 characters"
-                className="w-full rounded-xl border border-slate-200 bg-slate-50/50 py-2.5 pl-9 pr-3 text-xs text-slate-900 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className="w-full rounded-full bg-[#EFF1F5] border border-[#E2E6EC] shadow-clay-inset py-2.5 pl-10 pr-4 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9FE3C8] focus:border-transparent transition-all"
               />
             </div>
             {errors.password && (
-              <p className="mt-1 text-[11px] text-red-600">{errors.password.message}</p>
+              <p className="mt-1 text-[11px] text-red-600 pl-3">{errors.password.message}</p>
             )}
           </div>
 
           <button
             type="submit"
             disabled={isSubmitting}
-            className="w-full rounded-xl bg-brand-600 py-2.5 text-xs font-bold text-white shadow-md shadow-brand-600/20 hover:bg-brand-500 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 disabled:opacity-50"
+            className="w-full rounded-full bg-[#9FE3C8] py-3 text-xs font-bold text-[#0B2D22] border border-[#85DAB9] shadow-clay-btn hover:bg-[#8DE0C2] hover:shadow-clay-btn-hover transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#289E73] disabled:opacity-50"
           >
-            {isSubmitting ? 'Creating Account...' : 'Complete Registration'}
+            {isSubmitting ? 'Creating account...' : 'Complete Registration'}
           </button>
         </form>
 
-        <div className="text-center pt-2 border-t border-slate-100 text-xs text-slate-500">
-          Already registered?{' '}
-          <Link href="/login" className="font-semibold text-brand-600 hover:text-brand-700">
-            Sign In
+        <div className="text-center pt-3 border-t border-[#E2E6EC] text-xs text-slate-500">
+          Already have an account?{' '}
+          <Link href="/login" className="font-semibold text-[#289E73] hover:underline">
+            Sign in
           </Link>
         </div>
       </div>

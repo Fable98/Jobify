@@ -228,19 +228,19 @@ export default function JobDetailPage() {
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
               onClick={toggleSave}
-              className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 rounded-xl border px-4 py-3 text-xs font-semibold transition-colors ${
+              className={`flex-1 sm:flex-initial inline-flex items-center justify-center gap-1.5 rounded-full border px-5 py-2.5 text-xs font-semibold transition-all shadow-clay-1 ${
                 isSaved
-                  ? 'border-brand-200 bg-brand-50 text-brand-600'
-                  : 'border-slate-200 bg-white text-slate-700 hover:bg-slate-50'
+                  ? 'border-[#85DAB9] bg-[#E1F5EC] text-[#1F7D5C]'
+                  : 'border-[#E2E6EC] bg-white text-slate-700 hover:border-[#9FE3C8]'
               }`}
             >
-              <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-brand-600' : ''}`} />
+              <Bookmark className={`h-4 w-4 ${isSaved ? 'fill-[#1F7D5C]' : ''}`} />
               <span>{isSaved ? 'Saved' : 'Save'}</span>
             </button>
 
             {existingApp ? (
-              <div className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 rounded-xl bg-slate-100 px-5 py-3 text-xs font-bold text-slate-700 border border-slate-200">
-                <CheckCircle2 className="h-4 w-4 text-emerald-600" />
+              <div className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 rounded-full bg-[#E1F5EC] px-5 py-2.5 text-xs font-bold text-[#1F7D5C] border border-[#C3EBDA] shadow-clay-1">
+                <CheckCircle2 className="h-4 w-4 text-[#289E73]" />
                 <span>Applied ({existingApp.status})</span>
               </div>
             ) : (
@@ -254,7 +254,7 @@ export default function JobDetailPage() {
                     setIsApplyModalOpen(true);
                   }
                 }}
-                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 rounded-xl bg-brand-600 px-6 py-3 text-xs font-bold text-white shadow-md shadow-brand-600/25 hover:bg-brand-500 transition-colors focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600"
+                className="flex-1 sm:flex-initial inline-flex items-center justify-center gap-2 rounded-full bg-[#9FE3C8] border border-[#85DAB9] px-6 py-2.5 text-xs font-bold text-[#0B2D22] shadow-clay-btn hover:bg-[#8DE0C2] hover:shadow-clay-btn-hover transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[#289E73]"
               >
                 <Send className="h-3.5 w-3.5" />
                 <span>Apply for this role</span>
@@ -269,7 +269,7 @@ export default function JobDetailPage() {
         {/* Left Column: Job Details */}
         <div className="lg:col-span-2 space-y-8">
           {/* Role Overview */}
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
+          <section className="rounded-3xl border border-[#E2E6EC] bg-white p-6 sm:p-8 shadow-clay-2">
             <h2 className="text-lg font-bold text-slate-900 font-heading mb-4">
               About the Role
             </h2>
@@ -279,7 +279,7 @@ export default function JobDetailPage() {
           </section>
 
           {/* Responsibilities */}
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
+          <section className="rounded-3xl border border-[#E2E6EC] bg-white p-6 sm:p-8 shadow-clay-2">
             <h2 className="text-lg font-bold text-slate-900 font-heading mb-4">
               Key Responsibilities
             </h2>
@@ -289,7 +289,7 @@ export default function JobDetailPage() {
           </section>
 
           {/* Requirements */}
-          <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm">
+          <section className="rounded-3xl border border-[#E2E6EC] bg-white p-6 sm:p-8 shadow-clay-2">
             <h2 className="text-lg font-bold text-slate-900 font-heading mb-4">
               Role Requirements
             </h2>
@@ -357,7 +357,7 @@ export default function JobDetailPage() {
       {/* Apply Modal */}
       {isApplyModalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/60 p-4 backdrop-blur-sm animate-fadeIn">
-          <div className="w-full max-w-lg rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-2xl relative">
+          <div className="w-full max-w-lg rounded-3xl border border-[#E2E6EC] bg-white p-6 sm:p-8 shadow-clay-3 relative">
             <h3 className="text-xl font-bold text-slate-900 font-heading">
               Apply to {job.company.name}
             </h3>
@@ -366,7 +366,7 @@ export default function JobDetailPage() {
             </p>
 
             {applyError && (
-              <div className="mt-4 rounded-xl bg-red-50 border border-red-200 p-3 text-xs text-red-700">
+              <div className="mt-4 rounded-2xl bg-red-50 border border-red-200 p-3 text-xs text-red-700 shadow-clay-1">
                 {applyError}
               </div>
             )}
@@ -379,20 +379,20 @@ export default function JobDetailPage() {
                 </label>
 
                 {user?.profile?.defaultResume && (
-                  <div className="mb-3 flex items-center justify-between rounded-xl border border-brand-200 bg-brand-50/50 p-3 text-xs">
+                  <div className="mb-3 flex items-center justify-between rounded-2xl border border-[#C3EBDA] bg-[#E1F5EC]/60 p-3 text-xs">
                     <div className="flex items-center gap-2">
-                      <FileText className="h-4 w-4 text-brand-600" />
+                      <FileText className="h-4 w-4 text-[#289E73]" />
                       <span className="font-semibold text-slate-800">
                         {user.profile.defaultResume.originalName}
                       </span>
                     </div>
-                    <span className="rounded bg-brand-100 px-2 py-0.5 text-[10px] font-bold text-brand-700">
+                    <span className="rounded-full bg-[#9FE3C8] px-2.5 py-0.5 text-[10px] font-bold text-[#0B2D22]">
                       Default
                     </span>
                   </div>
                 )}
 
-                <div className="relative flex flex-col items-center justify-center rounded-xl border-2 border-dashed border-slate-300 p-4 hover:border-brand-400 bg-slate-50/50 transition-colors text-center">
+                <div className="relative flex flex-col items-center justify-center rounded-2xl border-2 border-dashed border-[#E2E6EC] p-4 hover:border-[#9FE3C8] bg-[#EFF1F5]/50 transition-colors text-center">
                   <Upload className="h-6 w-6 text-slate-400 mb-1" />
                   <span className="text-xs font-semibold text-slate-700">
                     {uploadedResumeFile ? uploadedResumeFile.name : 'Upload different PDF resume'}
@@ -421,7 +421,7 @@ export default function JobDetailPage() {
                   value={coverLetter}
                   onChange={(e) => setCoverLetter(e.target.value)}
                   placeholder="Introduce yourself, your recent engineering projects, and why you're a good fit..."
-                  className="w-full rounded-xl border border-slate-200 bg-slate-50/50 p-3 text-xs text-slate-900 placeholder:text-slate-400 focus:border-brand-500 focus:bg-white focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  className="w-full rounded-2xl border border-[#E2E6EC] bg-[#EFF1F5] shadow-clay-inset p-3.5 text-xs text-slate-900 placeholder:text-slate-400 focus:border-[#74D4B1] focus:bg-white focus:outline-none focus:ring-2 focus:ring-[#9FE3C8]"
                 />
               </div>
             </div>
@@ -430,7 +430,7 @@ export default function JobDetailPage() {
               <button
                 type="button"
                 onClick={() => setIsApplyModalOpen(false)}
-                className="rounded-xl px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-100 transition-colors"
+                className="rounded-full border border-[#E2E6EC] bg-white px-5 py-2.5 text-xs font-semibold text-slate-600 shadow-clay-1 hover:shadow-clay-2 transition-all"
               >
                 Cancel
               </button>
@@ -438,7 +438,7 @@ export default function JobDetailPage() {
                 type="button"
                 onClick={() => applyMutation.mutate()}
                 disabled={applyMutation.isPending}
-                className="inline-flex items-center gap-2 rounded-xl bg-brand-600 px-5 py-2.5 text-xs font-bold text-white shadow-sm hover:bg-brand-500 transition-colors disabled:opacity-50"
+                className="inline-flex items-center gap-2 rounded-full bg-[#9FE3C8] border border-[#85DAB9] px-6 py-2.5 text-xs font-bold text-[#0B2D22] shadow-clay-btn hover:bg-[#8DE0C2] hover:shadow-clay-btn-hover transition-all disabled:opacity-50"
               >
                 {applyMutation.isPending ? 'Submitting...' : 'Submit Application'}
               </button>
