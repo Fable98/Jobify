@@ -10,8 +10,12 @@ import { usersRouter } from './modules/users/users.routes';
 import { companiesRouter } from './modules/companies/companies.routes';
 import { jobsRouter } from './modules/jobs/jobs.routes';
 import { filesRouter } from './modules/files/files.routes';
+import { applicationsRouter } from './modules/applications/applications.routes';
+import { savedJobsRouter } from './modules/saved-jobs/saved-jobs.routes';
 import { jobsController } from './modules/jobs/jobs.controller';
+import { applicationsController } from './modules/applications/applications.controller';
 import { requireAuth, requireRole } from './middleware/auth';
+import { csrfProtection } from './middleware/csrf';
 import { Role } from '@prisma/client';
 
 export const app = express();
@@ -44,13 +48,41 @@ app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/companies', companiesRouter);
 app.use('/api/v1/jobs', jobsRouter);
 app.use('/api/v1/files', filesRouter);
+app.use('/api/v1/applications', applicationsRouter);
+app.use('/api/v1/saved-jobs', savedJobsRouter);
 
-// Section 5 alias: GET /employer/jobs
+// Section 5 direct aliases:
+// POST /api/v1/jobs/:jobId/apply
+app.post(
+  '/api/v1/jobs/:jobId/apply',
+  requireAuth,
+  csrfProtection,
+  applicationsController.applyToJob
+);
+
+// GET /api/v1/employer/jobs
 app.get(
   '/api/v1/employer/jobs',
   requireAuth,
   requireRole(Role.EMPLOYER, Role.ADMIN),
   jobsController.getEmployerJobs
+);
+
+// GET /api/v1/employer/applications
+app.get(
+  '/api/v1/employer/applications',
+  requireAuth,
+  requireRole(Role.EMPLOYER, Role.ADMIN),
+  applicationsController.getEmployerApplications
+);
+
+// PATCH /api/v1/employer/applications/:id/status
+app.patch(
+  '/api/v1/employer/applications/:id/status',
+  requireAuth,
+  requireRole(Role.EMPLOYER, Role.ADMIN),
+  csrfProtection,
+  applicationsController.updateApplicationStatus
 );
 
 // 404 handler for unmatched routes
