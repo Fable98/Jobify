@@ -11,7 +11,8 @@
 - [x] **Phase 7: Applications + saved jobs**
 - [x] **Phase 8: Stats + admin APIs**
 - [x] **Phase 9: Frontend foundation, public pages**
-- [ ] **Phase 10: Seeker dashboard**
+- [x] **Phase 10: Seeker dashboard**
+- [ ] **Phase 11: Employer dashboard**
 - [ ] **Phase 5: Jobs + search**
 - [ ] **Phase 6: Files**
 - [ ] **Phase 7: Applications + saved jobs**
@@ -199,6 +200,19 @@
   - `npm run lint`: Passed (0 warnings, 0 errors)
   - `npm test`: 73 tests passed
   - `npm run build:frontend`: Production build generated cleanly
+
+### Phase 10: Seeker dashboard
+- Status: **COMPLETED**
+- Implemented full candidate portal experience under `/dashboard`:
+  - `/dashboard`: Candidate stats overview consuming `GET /api/v1/stats/job-seeker` (Total Applied, Active Pipeline, Shortlisted, Accepted Offers, Saved Count, status pill distribution, and recent applications).
+  - `/dashboard/applications`: Live applicant tracker showing employer review status, linked PDF resume stream, and interactive withdrawal action for non-terminal applications (`PATCH /api/v1/applications/:id/withdraw`).
+  - `/dashboard/saved-jobs`: Bookmarked positions dashboard with instant unsave toggle.
+  - `/dashboard/profile`: Candidate profile editor with interactive technical skills tag manager, professional headline, bio, location, and dedicated PDF resume uploader.
+- Command validation:
+  - `npm run typecheck`: Passed
+  - `npm run lint`: Passed (0 warnings, 0 errors)
+  - `npm test`: 73 tests passed across 7 test suites
+
 
 
 
