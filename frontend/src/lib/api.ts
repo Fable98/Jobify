@@ -22,7 +22,10 @@ export async function apiClient<T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<{ data: T; meta?: Record<string, unknown> }> {
-  const url = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  let url = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  if (!url.startsWith('/api/')) {
+    url = `/api/v1${url}`;
+  }
 
   const headers = new Headers(options.headers || {});
   headers.set('X-Requested-With', 'XMLHttpRequest');
@@ -50,3 +53,31 @@ export async function apiClient<T>(
 
   return payload as { data: T; meta?: Record<string, unknown> };
 }
+
+apiClient.get = <T>(endpoint: string, options?: RequestInit) =>
+  apiClient<T>(endpoint, { ...options, method: 'GET' });
+
+apiClient.post = <T>(endpoint: string, body?: unknown, options?: RequestInit) =>
+  apiClient<T>(endpoint, {
+    ...options,
+    method: 'POST',
+    body: body instanceof FormData ? body : body !== undefined ? JSON.stringify(body) : undefined,
+  });
+
+apiClient.patch = <T>(endpoint: string, body?: unknown, options?: RequestInit) =>
+  apiClient<T>(endpoint, {
+    ...options,
+    method: 'PATCH',
+    body: body instanceof FormData ? body : body !== undefined ? JSON.stringify(body) : undefined,
+  });
+
+apiClient.put = <T>(endpoint: string, body?: unknown, options?: RequestInit) =>
+  apiClient<T>(endpoint, {
+    ...options,
+    method: 'PUT',
+    body: body instanceof FormData ? body : body !== undefined ? JSON.stringify(body) : undefined,
+  });
+
+apiClient.delete = <T>(endpoint: string, options?: RequestInit) =>
+  apiClient<T>(endpoint, { ...options, method: 'DELETE' });
+
