@@ -260,6 +260,19 @@
   - `npm run lint`: Passed with 0 errors and 0 warnings
   - `npm test`: 80 tests passed across 8 test suites in ~3.2s
 
+### Phase 14: Playwright E2E
+- Status: **COMPLETED**
+- Configured Playwright runner (`playwright.config.ts`) with dual webservers running Express API on port 5001 and Next.js production build on port 3000.
+- Implemented and verified the two critical user journeys specified in Section 9:
+  1. `seeker-journey.spec.ts`: Candidate registers as JOB_SEEKER -> navigates to `/dashboard` -> browses public catalog at `/jobs` -> searches by keyword -> navigates to job details -> submits application attaching PDF resume with valid magic bytes (`%PDF-1.4`) and cover letter -> verifies immediate state transition to `Applied (PENDING)` -> verifies application tracked in candidate dashboard at `/dashboard/applications`. Runs and passes in ~830ms.
+  2. `employer-admin-journey.spec.ts`: Employer registers as EMPLOYER -> navigates to `/employer/company` and submits organization setup for an unverified company -> Admin logs in and visits `/admin/companies` -> Admin approves and grants verification -> Employer reloads, observes `Verified Employer` badge, posts a public job at `/employer/jobs/new` -> Candidate discovers and applies to the job -> Employer views `/employer/applications` Kanban pipeline -> Employer transitions application through `PENDING -> REVIEWING -> SHORTLISTED -> ACCEPTED` -> Seeker navigates to `/dashboard/applications` and confirms updated `ACCEPTED` offer status. Runs and passes in ~2.9s.
+- Command validation:
+  - `npm run test:e2e`: 2 tests passed (6.1s)
+  - `npm test`: 80 backend tests passed (3.5s)
+  - `npm run typecheck`: Passed cleanly across all workspaces
+  - `npm run lint`: Passed with 0 errors and 0 warnings
+
+
 
 
 
