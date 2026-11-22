@@ -272,6 +272,27 @@
   - `npm run typecheck`: Passed cleanly across all workspaces
   - `npm run lint`: Passed with 0 errors and 0 warnings
 
+### Phase 15: README, final audit & production verification
+- Status: **COMPLETED**
+- Authored production-grade `README.md` covering:
+  - Architecture, monorepo layout, and exact pinned dependencies.
+  - Complete features by user role (Candidate, Employer, Administrator).
+  - Mermaid Entity-Relationship diagram (`erDiagram`) mapping all 8 models, foreign keys, cascades, and constraints.
+  - Authentication & security deep dive: DB-backed opaque sessions, SHA-256 session token hashing, constant-time Argon2id failure path masking, CSRF protection via custom headers, SameSite=Lax cookie delivery, IDOR prevention, rate limiting.
+  - Roles & permissions matrix covering all platform capabilities.
+  - Finite-state machine diagrams for candidate application workflow and job publication lifecycle.
+  - Full API endpoint reference table (/api/v1).
+  - Storage architecture: `StorageProvider` interface, `%PDF` magic bytes inspection, 5MB limit, and guide for pluggable AWS S3 / Cloudflare R2 integration.
+  - Setup, migrations, seed credentials, testing, and production deployment guidance.
+  - Documented design decisions, known limitations, and future extensibility avenues.
+- Final Gate verification:
+  - `npm run typecheck --workspaces`: Passed (0 errors)
+  - `npm run lint --workspaces`: Passed (0 errors, 0 warnings)
+  - `npm test` (Vitest & Supertest): 80 tests passed across 8 test suites in 3.28s
+  - `npm run test:e2e` (Playwright): 2 user journeys passed in 6.1s
+  - `npm run build` (tsc backend + Next.js 21 static/dynamic pages): Production build passed cleanly
+
+
 
 
 
