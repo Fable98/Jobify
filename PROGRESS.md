@@ -9,7 +9,8 @@
 - [x] **Phase 5: Jobs + search**
 - [x] **Phase 6: Files**
 - [x] **Phase 7: Applications + saved jobs**
-- [ ] **Phase 8: Stats + admin APIs**
+- [x] **Phase 8: Stats + admin APIs**
+- [ ] **Phase 9: Frontend foundation, public pages**
 - [ ] **Phase 5: Jobs + search**
 - [ ] **Phase 6: Files**
 - [ ] **Phase 7: Applications + saved jobs**
@@ -158,6 +159,26 @@
   - `npm run typecheck`: Passed
   - `npm run lint`: Passed (0 warnings, 0 errors)
   - `npm test`: 49 tests passed across 5 test suites (health, auth, companies, jobs, files)
+
+### Phase 8: Stats + admin APIs
+- Status: **COMPLETED**
+- Implemented comprehensive Stats module delivering live analytics for all user roles:
+  - `GET /api/v1/stats/job-seeker`: candidate appliedCount, activeApplications, shortlistedCount, acceptedCount, savedJobsCount, applicationsByStatus breakdown, and recent applications.
+  - `GET /api/v1/stats/employer`: activeJobsCount, draftJobsCount, totalJobsCount, totalApplicantsCount, pendingReviewCount, shortlistedCount, hiresCount, applicantsByJob, and recent candidate submissions.
+  - `GET /api/v1/admin/stats`: totalUsers, usersByRole, suspendedUsersCount, totalCompanies, verifiedCompaniesCount, pendingVerificationCount, totalJobs, activeJobs, totalApplications, and live database latency check.
+- Implemented full administrative control suite with strict `Role.ADMIN` gating:
+  - `GET /api/v1/admin/users`: paginated user auditing with role and status filters.
+  - `PATCH /api/v1/admin/users/:id/status`: user suspension/reactivation with immediate session revocation.
+  - `GET /api/v1/admin/companies`: company audit with verification filtering.
+  - `PATCH /api/v1/admin/companies/:id/verify`: verify/unverify companies.
+  - `GET /api/v1/admin/jobs`: global job monitoring.
+  - `PATCH /api/v1/admin/jobs/:id/moderate`: moderate jobs (mark REMOVED, immediately taking them off the public site, or restore).
+  - `GET /api/v1/admin/applications`: system-wide application monitor.
+- Command validation:
+  - `npm run typecheck`: Passed
+  - `npm run lint`: Passed (0 warnings, 0 errors)
+  - `npm test`: 73 tests passed across 7 test suites (health, auth, companies, jobs, files, applications, admin) in 2.88s
+
 
 ### Phase 7: Applications + saved jobs
 - Status: **COMPLETED**

@@ -29,7 +29,7 @@ async function main() {
   // 1. Admin user
   const admin = await prisma.user.upsert({
     where: { email: 'admin@hirehub.dev' },
-    update: {},
+    update: { passwordHash: adminPasswordHash, status: UserStatus.ACTIVE, role: Role.ADMIN },
     create: {
       email: 'admin@hirehub.dev',
       passwordHash: adminPasswordHash,
@@ -41,7 +41,7 @@ async function main() {
   // 2. Employers
   const sarahOwner = await prisma.user.upsert({
     where: { email: 'sarah.owner@techflow.example.com' },
-    update: {},
+    update: { passwordHash: employerPasswordHash, status: UserStatus.ACTIVE },
     create: {
       email: 'sarah.owner@techflow.example.com',
       passwordHash: employerPasswordHash,
@@ -52,7 +52,7 @@ async function main() {
 
   const daveRecruiter = await prisma.user.upsert({
     where: { email: 'dave.recruiter@techflow.example.com' },
-    update: {},
+    update: { passwordHash: employerPasswordHash, status: UserStatus.ACTIVE },
     create: {
       email: 'dave.recruiter@techflow.example.com',
       passwordHash: employerPasswordHash,
@@ -63,7 +63,7 @@ async function main() {
 
   const elenaOwner = await prisma.user.upsert({
     where: { email: 'elena.owner@acmecloud.example.com' },
-    update: {},
+    update: { passwordHash: employerPasswordHash, status: UserStatus.ACTIVE },
     create: {
       email: 'elena.owner@acmecloud.example.com',
       passwordHash: employerPasswordHash,
@@ -74,7 +74,7 @@ async function main() {
 
   const marcusOwner = await prisma.user.upsert({
     where: { email: 'marcus.owner@stealthai.example.com' },
-    update: {},
+    update: { passwordHash: employerPasswordHash, status: UserStatus.ACTIVE },
     create: {
       email: 'marcus.owner@stealthai.example.com',
       passwordHash: employerPasswordHash,
@@ -86,7 +86,7 @@ async function main() {
   // 3. Job Seekers
   const alexSeeker = await prisma.user.upsert({
     where: { email: 'alex.dev@hirehub.dev' },
-    update: {},
+    update: { passwordHash: seekerPasswordHash, status: UserStatus.ACTIVE },
     create: {
       email: 'alex.dev@hirehub.dev',
       passwordHash: seekerPasswordHash,
@@ -97,7 +97,7 @@ async function main() {
 
   const mayaSeeker = await prisma.user.upsert({
     where: { email: 'maya.designer@hirehub.dev' },
-    update: {},
+    update: { passwordHash: seekerPasswordHash, status: UserStatus.ACTIVE },
     create: {
       email: 'maya.designer@hirehub.dev',
       passwordHash: seekerPasswordHash,
@@ -108,7 +108,7 @@ async function main() {
 
   const jordanSeeker = await prisma.user.upsert({
     where: { email: 'jordan.cloud@hirehub.dev' },
-    update: {},
+    update: { passwordHash: seekerPasswordHash, status: UserStatus.ACTIVE },
     create: {
       email: 'jordan.cloud@hirehub.dev',
       passwordHash: seekerPasswordHash,
@@ -119,7 +119,7 @@ async function main() {
 
   const claireSeeker = await prisma.user.upsert({
     where: { email: 'claire.junior@hirehub.dev' },
-    update: {},
+    update: { passwordHash: seekerPasswordHash, status: UserStatus.ACTIVE },
     create: {
       email: 'claire.junior@hirehub.dev',
       passwordHash: seekerPasswordHash,
@@ -130,7 +130,7 @@ async function main() {
 
   const samSuspended = await prisma.user.upsert({
     where: { email: 'sam.suspended@hirehub.dev' },
-    update: {},
+    update: { passwordHash: seekerPasswordHash, status: UserStatus.SUSPENDED },
     create: {
       email: 'sam.suspended@hirehub.dev',
       passwordHash: seekerPasswordHash,
@@ -282,7 +282,7 @@ async function main() {
 
   const stealthAI = await prisma.company.upsert({
     where: { slug: 'stealthai-corp' },
-    update: {},
+    update: { verified: false },
     create: {
       name: 'StealthAI Corp',
       slug: 'stealthai-corp',
