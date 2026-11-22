@@ -4,7 +4,7 @@
 
 - [x] **Phase 1: Scaffold + Docker + env validation**
 - [x] **Phase 2: Prisma schema, migration, seed**
-- [ ] **Phase 3: Auth + sessions + RBAC middleware**
+- [x] **Phase 3: Auth + sessions + RBAC middleware**
 - [ ] **Phase 4: Companies + members**
 - [ ] **Phase 5: Jobs + search**
 - [ ] **Phase 6: Files**
@@ -68,5 +68,25 @@
   - `npm run typecheck`: Passed
   - `npm run lint`: Passed
   - `npm test`: Passed
+
+### Phase 3: Auth + sessions + RBAC middleware
+- Status: **COMPLETED**
+- Implemented DB-backed server-side sessions with SHA-256 hashed session tokens, HttpOnly/SameSite=Lax/Secure cookies, session rotation on login, idle timeouts (24h), and absolute expiration (7d).
+- Implemented CSRF protection requiring custom header `X-Requested-With` on all state-changing endpoints (POST/PUT/PATCH/DELETE).
+- Argon2id password hashing with constant-time dummy verification failure paths preventing email enumeration attacks.
+- Enforced role isolation: registration restricted to `JOB_SEEKER` and `EMPLOYER` (ADMIN role attempts rejected with 422).
+- Automatic suspension check rejecting suspended users with 403 Forbidden and invalidating their active sessions.
+- Added endpoints:
+  - `POST /api/v1/auth/register`
+  - `POST /api/v1/auth/login`
+  - `POST /api/v1/auth/logout`
+  - `GET /api/v1/auth/me`
+  - `PATCH /api/v1/auth/password`
+- Middleware implemented: `requireAuth`, `optionalAuth`, `requireRole`, `csrfProtection`, `authRateLimiter`, and `apiRateLimiter`.
+- Command validation:
+  - `npm run typecheck`: Passed (both frontend and backend clean)
+  - `npm run lint`: Passed (0 warnings, 0 errors)
+  - `npm test`: 14 tests passed across 2 test suites (health and auth)
+
 
 

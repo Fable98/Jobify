@@ -2,7 +2,10 @@ import express, { Request, Response, NextFunction } from 'express';
 import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import { ZodError } from 'zod';
 import { env } from './config/env';
+import { AppError } from './utils/errors';
+import { authRouter } from './modules/auth/auth.routes';
 
 export const app = express();
 
@@ -28,23 +31,56 @@ app.get('/api/v1/health', (_req: Request, res: Response) => {
   });
 });
 
+// Mounted Routes
+app.use('/api/v1/auth', authRouter);
+
+// 404 handler for unmatched routes
+app.use((_req: Request, res: Response) => {
+  res.status(404).json({
+    error: {
+      code: 'NOT_FOUND',
+      message: 'The requested endpoint does not exist',
+    },
+  });
+});
+
 // Centralized error handler
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
+  if (err instanceof ZodError) {
+    res.status(422).json({
+      error: {
+        code: 'VALIDATION_ERROR',
+        message: 'Validation failed',
+        details: err.format(),
+      },
+    });
+    return;
+  }
+
+  if (err instanceof AppError) {
+    res.status(err.statusCode).json({
+      error: {
+        code: err.code,
+        message: err.message,
+        ...(err.details ? { details: err.details } : {}),
+      },
+    });
+    return;
+  }
+
   const statusCode = err.statusCode || err.status || 500;
   const code = err.code || (statusCode === 500 ? 'INTERNAL_SERVER_ERROR' : 'BAD_REQUEST');
   const message = err.message || 'An unexpected error occurred';
-  const details = err.details || undefined;
 
   if (env.NODE_ENV !== 'production' && statusCode === 500) {
-    console.error('Server error:', err);
+    console.error('Unhandled server error:', err);
   }
 
   res.status(statusCode).json({
     error: {
       code,
       message,
-      ...(details ? { details } : {}),
       ...(env.NODE_ENV !== 'production' && err.stack ? { stack: err.stack } : {}),
     },
   });
