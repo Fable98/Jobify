@@ -62,7 +62,7 @@ export default function LoginPage() {
             <Briefcase className="h-6 w-6" />
           </div>
           <h2 className="mt-4 text-2xl font-bold tracking-tight text-slate-900 font-heading">
-            Sign in to HireHub
+            Sign in to Jobify
           </h2>
           <p className="mt-1.5 text-xs text-slate-500">
             Access your applications, posted roles, or company settings.

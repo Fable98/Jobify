@@ -19,7 +19,7 @@ describe('Auth & Session System', () => {
     it('rejects state-changing POST request without X-Requested-With header', async () => {
       const res = await request(app)
         .post('/api/v1/auth/login')
-        .send({ email: 'admin@hirehub.dev', password: 'AdminPass123!' });
+        .send({ email: 'admin@jobify.dev', password: 'AdminPass123!' });
 
       expect(res.status).toBe(403);
       expect(res.body.error.code).toBe('CSRF_DETECTED');
@@ -29,10 +29,10 @@ describe('Auth & Session System', () => {
       const res = await request(app)
         .post('/api/v1/auth/login')
         .set('X-Requested-With', 'XMLHttpRequest')
-        .send({ email: 'admin@hirehub.dev', password: 'AdminPass123!' });
+        .send({ email: 'admin@jobify.dev', password: 'AdminPass123!' });
 
       expect(res.status).toBe(200);
-      expect(res.body.data.user.email).toBe('admin@hirehub.dev');
+      expect(res.body.data.user.email).toBe('admin@jobify.dev');
     });
   });
 
@@ -123,12 +123,12 @@ describe('Auth & Session System', () => {
         .post('/api/v1/auth/login')
         .set('X-Requested-With', 'XMLHttpRequest')
         .send({
-          email: 'alex.dev@hirehub.dev',
+          email: 'alex.dev@jobify.dev',
           password: 'SeekerPass123!',
         });
 
       expect(res.status).toBe(200);
-      expect(res.body.data.user.email).toBe('alex.dev@hirehub.dev');
+      expect(res.body.data.user.email).toBe('alex.dev@jobify.dev');
       expect(res.body.data.user.passwordHash).toBeUndefined();
 
       const cookies = res.headers['set-cookie'] as unknown as string[];
@@ -140,7 +140,7 @@ describe('Auth & Session System', () => {
         .post('/api/v1/auth/login')
         .set('X-Requested-With', 'XMLHttpRequest')
         .send({
-          email: 'nonexistent@hirehub.dev',
+          email: 'nonexistent@jobify.dev',
           password: 'WrongPassword123!',
         });
 
@@ -154,7 +154,7 @@ describe('Auth & Session System', () => {
         .post('/api/v1/auth/login')
         .set('X-Requested-With', 'XMLHttpRequest')
         .send({
-          email: 'alex.dev@hirehub.dev',
+          email: 'alex.dev@jobify.dev',
           password: 'WrongPassword123!',
         });
 
@@ -168,7 +168,7 @@ describe('Auth & Session System', () => {
         .post('/api/v1/auth/login')
         .set('X-Requested-With', 'XMLHttpRequest')
         .send({
-          email: 'sam.suspended@hirehub.dev',
+          email: 'sam.suspended@jobify.dev',
           password: 'SeekerPass123!',
         });
 
@@ -184,7 +184,7 @@ describe('Auth & Session System', () => {
         .post('/api/v1/auth/login')
         .set('X-Requested-With', 'XMLHttpRequest')
         .send({
-          email: 'alex.dev@hirehub.dev',
+          email: 'alex.dev@jobify.dev',
           password: 'SeekerPass123!',
         });
 
@@ -199,7 +199,7 @@ describe('Auth & Session System', () => {
         .set('Cookie', cookieStr);
 
       expect(meRes.status).toBe(200);
-      expect(meRes.body.data.user.email).toBe('alex.dev@hirehub.dev');
+      expect(meRes.body.data.user.email).toBe('alex.dev@jobify.dev');
       expect(meRes.body.data.user.profile).toBeDefined();
       expect(meRes.body.data.user.passwordHash).toBeUndefined();
     });
@@ -215,7 +215,7 @@ describe('Auth & Session System', () => {
         .post('/api/v1/auth/login')
         .set('X-Requested-With', 'XMLHttpRequest')
         .send({
-          email: 'alex.dev@hirehub.dev',
+          email: 'alex.dev@jobify.dev',
           password: 'SeekerPass123!',
         });
 

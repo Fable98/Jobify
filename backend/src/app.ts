@@ -38,7 +38,7 @@ app.get('/api/v1/health', (_req: Request, res: Response) => {
   res.status(200).json({
     data: {
       status: 'ok',
-      service: 'hirehub-backend',
+      service: 'jobify-backend',
       timestamp: new Date().toISOString(),
     },
   });

@@ -40,7 +40,7 @@ describe('Companies & Members Module', () => {
     const alexRes = await request(app)
       .post('/api/v1/auth/login')
       .set('X-Requested-With', 'XMLHttpRequest')
-      .send({ email: 'alex.dev@hirehub.dev', password: 'SeekerPass123!' });
+      .send({ email: 'alex.dev@jobify.dev', password: 'SeekerPass123!' });
     expect(alexRes.status).toBe(200);
     const alexCookies = alexRes.headers['set-cookie'] as unknown as string[];
     alexSeekerCookie = Array.isArray(alexCookies) ? alexCookies.join('; ') : String(alexCookies);
@@ -179,7 +179,7 @@ describe('Companies & Members Module', () => {
         .set('X-Requested-With', 'XMLHttpRequest')
         .set('Cookie', sarahOwnerCookie)
         .send({
-          email: 'alex.dev@hirehub.dev', // Alex is a JOB_SEEKER
+          email: 'alex.dev@jobify.dev', // Alex is a JOB_SEEKER
           role: 'RECRUITER',
         });
 

@@ -15,7 +15,7 @@ describe('Files Module & Storage Security', () => {
     const alexRes = await request(app)
       .post('/api/v1/auth/login')
       .set('X-Requested-With', 'XMLHttpRequest')
-      .send({ email: 'alex.dev@hirehub.dev', password: 'SeekerPass123!' });
+      .send({ email: 'alex.dev@jobify.dev', password: 'SeekerPass123!' });
     const rawAlex = alexRes.headers['set-cookie'] as unknown as string[];
     alexSeekerCookie = Array.isArray(rawAlex) ? rawAlex.join('; ') : String(rawAlex);
 
@@ -23,7 +23,7 @@ describe('Files Module & Storage Security', () => {
     const mayaRes = await request(app)
       .post('/api/v1/auth/login')
       .set('X-Requested-With', 'XMLHttpRequest')
-      .send({ email: 'maya.designer@hirehub.dev', password: 'SeekerPass123!' });
+      .send({ email: 'maya.designer@jobify.dev', password: 'SeekerPass123!' });
     const rawMaya = mayaRes.headers['set-cookie'] as unknown as string[];
     mayaSeekerCookie = Array.isArray(rawMaya) ? rawMaya.join('; ') : String(rawMaya);
 
@@ -39,12 +39,12 @@ describe('Files Module & Storage Security', () => {
     const adminRes = await request(app)
       .post('/api/v1/auth/login')
       .set('X-Requested-With', 'XMLHttpRequest')
-      .send({ email: 'admin@hirehub.dev', password: 'AdminPass123!' });
+      .send({ email: 'admin@jobify.dev', password: 'AdminPass123!' });
     const rawAdmin = adminRes.headers['set-cookie'] as unknown as string[];
     adminCookie = Array.isArray(rawAdmin) ? rawAdmin.join('; ') : String(rawAdmin);
 
     const alexFile = await prisma.storedFile.findFirst({
-      where: { owner: { email: 'alex.dev@hirehub.dev' } },
+      where: { owner: { email: 'alex.dev@jobify.dev' } },
     });
     alexResumeId = alexFile!.id;
   });

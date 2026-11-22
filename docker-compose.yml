@@ -1,23 +1,23 @@
 services:
   postgres:
     image: postgres:16-alpine
-    container_name: hirehub_postgres
+    container_name: jobify_postgres
     restart: unless-stopped
     environment:
-      POSTGRES_USER: ${POSTGRES_USER:-hirehub}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-hirehub_secret}
-      POSTGRES_DB: ${POSTGRES_DB:-hirehub}
+      POSTGRES_USER: ${POSTGRES_USER:-jobify}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-jobify_secret}
+      POSTGRES_DB: ${POSTGRES_DB:-jobify}
     ports:
       - "${POSTGRES_PORT:-5435}:5432"
     volumes:
-      - hirehub_pgdata:/var/lib/postgresql/data
+      - jobify_pgdata:/var/lib/postgresql/data
       - ./docker/postgres/init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-hirehub} -d ${POSTGRES_DB:-hirehub}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-jobify} -d ${POSTGRES_DB:-jobify}"]
       interval: 5s
       timeout: 5s
       retries: 5
 
 volumes:
-  hirehub_pgdata:
-    name: hirehub_pgdata
+  jobify_pgdata:
+    name: jobify_pgdata

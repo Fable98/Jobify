@@ -15,7 +15,7 @@ async function main() {
   }
 
   const samplePdfContent = Buffer.from(
-    '%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 44 >>\nstream\nBT /F1 12 Tf 72 712 Td (HireHub Sample Resume) ET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000216 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n310\n%%EOF\n'
+    '%PDF-1.4\n1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n2 0 obj\n<< /Type /Pages /Kids [3 0 R] /Count 1 >>\nendobj\n3 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 612 792] /Contents 4 0 R >>\nendobj\n4 0 obj\n<< /Length 44 >>\nstream\nBT /F1 12 Tf 72 712 Td (Jobify Sample Resume) ET\nendstream\nendobj\nxref\n0 5\n0000000000 65535 f \n0000000009 00000 n \n0000000058 00000 n \n0000000115 00000 n \n0000000216 00000 n \ntrailer\n<< /Size 5 /Root 1 0 R >>\nstartxref\n310\n%%EOF\n'
   );
 
   const sampleKey = 'sample-resume-uuid-key.pdf';
@@ -28,10 +28,10 @@ async function main() {
 
   // 1. Admin user
   const admin = await prisma.user.upsert({
-    where: { email: 'admin@hirehub.dev' },
+    where: { email: 'admin@jobify.dev' },
     update: { passwordHash: adminPasswordHash, status: UserStatus.ACTIVE, role: Role.ADMIN },
     create: {
-      email: 'admin@hirehub.dev',
+      email: 'admin@jobify.dev',
       passwordHash: adminPasswordHash,
       role: Role.ADMIN,
       status: UserStatus.ACTIVE,
@@ -85,10 +85,10 @@ async function main() {
 
   // 3. Job Seekers
   const alexSeeker = await prisma.user.upsert({
-    where: { email: 'alex.dev@hirehub.dev' },
+    where: { email: 'alex.dev@jobify.dev' },
     update: { passwordHash: seekerPasswordHash, status: UserStatus.ACTIVE },
     create: {
-      email: 'alex.dev@hirehub.dev',
+      email: 'alex.dev@jobify.dev',
       passwordHash: seekerPasswordHash,
       role: Role.JOB_SEEKER,
       status: UserStatus.ACTIVE,
@@ -96,10 +96,10 @@ async function main() {
   });
 
   const mayaSeeker = await prisma.user.upsert({
-    where: { email: 'maya.designer@hirehub.dev' },
+    where: { email: 'maya.designer@jobify.dev' },
     update: { passwordHash: seekerPasswordHash, status: UserStatus.ACTIVE },
     create: {
-      email: 'maya.designer@hirehub.dev',
+      email: 'maya.designer@jobify.dev',
       passwordHash: seekerPasswordHash,
       role: Role.JOB_SEEKER,
       status: UserStatus.ACTIVE,
@@ -107,10 +107,10 @@ async function main() {
   });
 
   const jordanSeeker = await prisma.user.upsert({
-    where: { email: 'jordan.cloud@hirehub.dev' },
+    where: { email: 'jordan.cloud@jobify.dev' },
     update: { passwordHash: seekerPasswordHash, status: UserStatus.ACTIVE },
     create: {
-      email: 'jordan.cloud@hirehub.dev',
+      email: 'jordan.cloud@jobify.dev',
       passwordHash: seekerPasswordHash,
       role: Role.JOB_SEEKER,
       status: UserStatus.ACTIVE,
@@ -118,10 +118,10 @@ async function main() {
   });
 
   const claireSeeker = await prisma.user.upsert({
-    where: { email: 'claire.junior@hirehub.dev' },
+    where: { email: 'claire.junior@jobify.dev' },
     update: { passwordHash: seekerPasswordHash, status: UserStatus.ACTIVE },
     create: {
-      email: 'claire.junior@hirehub.dev',
+      email: 'claire.junior@jobify.dev',
       passwordHash: seekerPasswordHash,
       role: Role.JOB_SEEKER,
       status: UserStatus.ACTIVE,
@@ -129,10 +129,10 @@ async function main() {
   });
 
   const samSuspended = await prisma.user.upsert({
-    where: { email: 'sam.suspended@hirehub.dev' },
+    where: { email: 'sam.suspended@jobify.dev' },
     update: { passwordHash: seekerPasswordHash, status: UserStatus.SUSPENDED },
     create: {
-      email: 'sam.suspended@hirehub.dev',
+      email: 'sam.suspended@jobify.dev',
       passwordHash: seekerPasswordHash,
       role: Role.JOB_SEEKER,
       status: UserStatus.SUSPENDED,
@@ -703,16 +703,16 @@ async function main() {
 
   console.log('✅ Seed finished successfully!');
   console.log('--- Credentials Summary ---');
-  console.log('Admin:       admin@hirehub.dev / AdminPass123!');
+  console.log('Admin:       admin@jobify.dev / AdminPass123!');
   console.log('Employers:   sarah.owner@techflow.example.com / EmployerPass123!');
   console.log('             dave.recruiter@techflow.example.com / EmployerPass123!');
   console.log('             elena.owner@acmecloud.example.com / EmployerPass123!');
   console.log('             marcus.owner@stealthai.example.com / EmployerPass123! (Unverified)');
-  console.log('Job Seekers: alex.dev@hirehub.dev / SeekerPass123!');
-  console.log('             maya.designer@hirehub.dev / SeekerPass123!');
-  console.log('             jordan.cloud@hirehub.dev / SeekerPass123!');
-  console.log('             claire.junior@hirehub.dev / SeekerPass123!');
-  console.log('             sam.suspended@hirehub.dev / SeekerPass123! (Suspended)');
+  console.log('Job Seekers: alex.dev@jobify.dev / SeekerPass123!');
+  console.log('             maya.designer@jobify.dev / SeekerPass123!');
+  console.log('             jordan.cloud@jobify.dev / SeekerPass123!');
+  console.log('             claire.junior@jobify.dev / SeekerPass123!');
+  console.log('             sam.suspended@jobify.dev / SeekerPass123! (Suspended)');
 }
 
 main()

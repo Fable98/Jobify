@@ -70,7 +70,7 @@ export default function RegisterPage() {
             Create an Account
           </h2>
           <p className="mt-1 text-xs text-slate-500">
-            Join HireHub as a job candidate or hiring employer.
+            Join Jobify as a job candidate or hiring employer.
           </p>
         </div>
 

@@ -11,7 +11,7 @@ describe('Users & Stats Module', () => {
     const alexRes = await request(app)
       .post('/api/v1/auth/login')
       .set('X-Requested-With', 'XMLHttpRequest')
-      .send({ email: 'alex.dev@hirehub.dev', password: 'SeekerPass123!' });
+      .send({ email: 'alex.dev@jobify.dev', password: 'SeekerPass123!' });
     const rawAlex = alexRes.headers['set-cookie'] as unknown as string[];
     alexSeekerCookie = Array.isArray(rawAlex) ? rawAlex.join('; ') : String(rawAlex);
 
@@ -31,7 +31,7 @@ describe('Users & Stats Module', () => {
         .set('Cookie', alexSeekerCookie);
 
       expect(res.status).toBe(200);
-      expect(res.body.data.user.email).toBe('alex.dev@hirehub.dev');
+      expect(res.body.data.user.email).toBe('alex.dev@jobify.dev');
       expect(res.body.data.user.role).toBe('JOB_SEEKER');
       expect(res.body.data.user.profile).toBeDefined();
     });

@@ -10,7 +10,7 @@ export default function HomePage() {
             <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-600 text-white shadow-md shadow-brand-600/20">
               <Briefcase className="h-5 w-5" />
             </div>
-            <span className="text-xl font-bold tracking-tight text-slate-900 font-heading">HireHub</span>
+            <span className="text-xl font-bold tracking-tight text-slate-900 font-heading">Jobify</span>
           </div>
           <nav className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600">
             <Link href="/jobs" className="hover:text-brand-600 transition-colors">Find Jobs</Link>
@@ -105,7 +105,7 @@ export default function HomePage() {
 
       <footer className="border-t border-slate-200 bg-slate-50 py-10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
-          <p>© {new Date().getFullYear()} HireHub. Built for production-grade full-stack recruitment.</p>
+          <p>© {new Date().getFullYear()} Jobify. Built for production-grade full-stack recruitment.</p>
           <div className="flex gap-6">
             <Link href="/jobs" className="hover:text-slate-900">Jobs</Link>
             <Link href="/login" className="hover:text-slate-900">Sign In</Link>

@@ -45,7 +45,7 @@ export default function AdminLayout({
         </div>
         <h1 className="text-2xl font-bold text-slate-900 mb-2">Admin Access Required</h1>
         <p className="text-slate-600 max-w-md mb-6">
-          This portal is restricted to HireHub platform administrators. You must be signed in with an admin account.
+          This portal is restricted to Jobify platform administrators. You must be signed in with an admin account.
         </p>
         <Link
           href="/login"
@@ -72,7 +72,7 @@ export default function AdminLayout({
           <div className="flex items-center gap-2">
             <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
             <ShieldCheck className="h-4 w-4 text-indigo-400" />
-            <span className="font-semibold text-white">HireHub System Administration</span>
+            <span className="font-semibold text-white">Jobify System Administration</span>
             <span className="rounded bg-indigo-500/20 px-2 py-0.5 text-indigo-300 font-mono text-[10px]">
               SUPERUSER
             </span>

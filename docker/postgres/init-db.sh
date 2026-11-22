@@ -2,7 +2,7 @@
 set -e
 
 psql -v ON_ERROR_STOP=1 --username "$POSTGRES_USER" --dbname "$POSTGRES_DB" <<-EOSQL
-    SELECT 'CREATE DATABASE hirehub_test'
-    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'hirehub_test')\gexec
-    GRANT ALL PRIVILEGES ON DATABASE hirehub_test TO "$POSTGRES_USER";
+    SELECT 'CREATE DATABASE jobify_test'
+    WHERE NOT EXISTS (SELECT FROM pg_database WHERE datname = 'jobify_test')\gexec
+    GRANT ALL PRIVILEGES ON DATABASE jobify_test TO "$POSTGRES_USER";
 EOSQL

@@ -5,7 +5,7 @@ import { Navbar } from '@/components/common/navbar';
 import { Footer } from '@/components/common/footer';
 
 export const metadata: Metadata = {
-  title: 'HireHub | Modern Full-Stack Job Portal',
+  title: 'Jobify | Modern Full-Stack Job Portal',
   description: 'Connect high-growth companies with premier engineering, design, and product talent.',
 };
 

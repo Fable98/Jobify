@@ -4,7 +4,7 @@ import { hashToken } from '../utils/crypto';
 import { UnauthorizedError, ForbiddenError } from '../utils/errors';
 import { Role, UserStatus } from '@prisma/client';
 
-export const SESSION_COOKIE_NAME = 'hirehub_session';
+export const SESSION_COOKIE_NAME = 'jobify_session';
 export const SESSION_MAX_AGE_MS = 7 * 24 * 60 * 60 * 1000; // 7 days
 export const SESSION_IDLE_TIMEOUT_MS = 24 * 60 * 60 * 1000; // 24 hours idle timeout
 

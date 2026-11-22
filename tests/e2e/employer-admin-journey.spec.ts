@@ -54,7 +54,7 @@ test.describe('Employer, Admin & Candidate Lifecycle Journey', () => {
     const adminPage = await adminContext.newPage();
 
     await adminPage.goto('/login');
-    await adminPage.locator('input[type="email"]').fill('admin@hirehub.dev');
+    await adminPage.locator('input[type="email"]').fill('admin@jobify.dev');
     await adminPage.locator('input[type="password"]').fill('AdminPass123!');
     await adminPage.getByRole('button', { name: /Sign In/i }).click();
     await expect(adminPage).toHaveURL(/\/admin/, { timeout: 15000 });
@@ -125,7 +125,7 @@ test.describe('Employer, Admin & Candidate Lifecycle Journey', () => {
 
     // Login as Alex (Seeker)
     await seekerPage.goto('/login');
-    await seekerPage.locator('input[type="email"]').fill('alex.dev@hirehub.dev');
+    await seekerPage.locator('input[type="email"]').fill('alex.dev@jobify.dev');
     await seekerPage.locator('input[type="password"]').fill('SeekerPass123!');
     await seekerPage.getByRole('button', { name: /Sign In/i }).click();
     await expect(seekerPage).toHaveURL(/\/dashboard/, { timeout: 15000 });
@@ -160,7 +160,7 @@ test.describe('Employer, Admin & Candidate Lifecycle Journey', () => {
     });
 
     // Verify candidate appears in PENDING column ("New Applications")
-    await expect(employerPage.getByText('alex.dev@hirehub.dev')).toBeVisible({ timeout: 10000 });
+    await expect(employerPage.getByText('alex.dev@jobify.dev')).toBeVisible({ timeout: 10000 });
 
     // Transition 1: PENDING -> REVIEWING (Click "Review ->")
     const reviewBtn = employerPage.getByRole('button', { name: /Review →/i }).first();
@@ -177,7 +177,7 @@ test.describe('Employer, Admin & Candidate Lifecycle Journey', () => {
     await acceptBtn.click();
 
     // Verify candidate is now in the Accepted / Hired column
-    await expect(employerPage.locator('text=alex.dev@hirehub.dev')).toBeVisible();
+    await expect(employerPage.locator('text=alex.dev@jobify.dev')).toBeVisible();
 
     // -------------------------------------------------------------
     // 5. Seeker verifies the updated status on candidate dashboard

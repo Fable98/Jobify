@@ -13,7 +13,7 @@ describe('Admin & Stats Module', () => {
     const adminRes = await request(app)
       .post('/api/v1/auth/login')
       .set('X-Requested-With', 'XMLHttpRequest')
-      .send({ email: 'admin@hirehub.dev', password: 'AdminPass123!' });
+      .send({ email: 'admin@jobify.dev', password: 'AdminPass123!' });
     const rawAdmin = adminRes.headers['set-cookie'] as unknown as string[];
     adminCookie = Array.isArray(rawAdmin) ? rawAdmin.join('; ') : String(rawAdmin);
 
@@ -21,7 +21,7 @@ describe('Admin & Stats Module', () => {
     const alexRes = await request(app)
       .post('/api/v1/auth/login')
       .set('X-Requested-With', 'XMLHttpRequest')
-      .send({ email: 'alex.dev@hirehub.dev', password: 'SeekerPass123!' });
+      .send({ email: 'alex.dev@jobify.dev', password: 'SeekerPass123!' });
     const rawAlex = alexRes.headers['set-cookie'] as unknown as string[];
     alexSeekerCookie = Array.isArray(rawAlex) ? rawAlex.join('; ') : String(rawAlex);
 

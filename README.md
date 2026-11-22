@@ -1,6 +1,6 @@
-# HireHub: Production-Grade Full-Stack Recruitment Platform
+# Jobify: Production-Grade Full-Stack Recruitment Platform
 
-HireHub is a production-grade, multi-tenant recruitment and job application platform engineered with a strict security model, role-based access control (RBAC), database-backed server-side sessions, and a finite-state machine governing candidate application workflows. Built for job seekers, verified employers, and platform administrators.
+Jobify is a production-grade, multi-tenant recruitment and job application platform engineered with a strict security model, role-based access control (RBAC), database-backed server-side sessions, and a finite-state machine governing candidate application workflows. Built for job seekers, verified employers, and platform administrators.
 
 ---
 
@@ -24,10 +24,10 @@ HireHub is a production-grade, multi-tenant recruitment and job application plat
 
 ## 2. Architecture & Tech Stack
 
-HireHub is organized as an `npm` workspace monorepo separating the Express API and Next.js frontend while sharing TypeScript configurations and end-to-end test fixtures:
+Jobify is organized as an `npm` workspace monorepo separating the Express API and Next.js frontend while sharing TypeScript configurations and end-to-end test fixtures:
 
 ```
-hirehub/
+jobify/
 ├── backend/                  # Node.js + Express + Prisma REST API
 │   ├── prisma/               # Schema, migrations, and realistic seed data
 │   ├── src/
@@ -58,7 +58,7 @@ hirehub/
 ### Exact Pinned Dependencies
 - **Frontend**: Next.js `15.1.7` (App Router), React `19.0.0`, Tailwind CSS `3.4.17`, TanStack Query `5.66.9`, React Hook Form `7.54.2`, Zod `3.24.2`, Lucide React `0.475.0`.
 - **Backend**: Express `4.21.2`, Prisma ORM `6.4.1`, Argon2 `0.41.1`, Multer `1.4.5-lts.1`, Helmet `8.0.0`, CORS `2.8.5`, express-rate-limit `7.5.0`, cookie-parser `1.4.7`.
-- **Database**: PostgreSQL `16-alpine` running on port `5435` with dedicated development (`hirehub`) and test (`hirehub_test`) databases.
+- **Database**: PostgreSQL `16-alpine` running on port `5435` with dedicated development (`jobify`) and test (`jobify_test`) databases.
 - **Testing**: Vitest `3.0.7`, Supertest `7.0.0`, Playwright `1.50.1`.
 
 ---
@@ -66,7 +66,7 @@ hirehub/
 ## 3. Key Features
 
 ### Job Seekers (Candidates)
-- **Role Registration & Auth**: Register securely with instant server-side session cookie issuance (`hirehub_session`).
+- **Role Registration & Auth**: Register securely with instant server-side session cookie issuance (`jobify_session`).
 - **Discovery Engine**: Case-insensitive search across job titles, company names, and locations; filter by employment type, experience level, and continuous salary range overlap; sort by publication date or salary.
 - **Job Details & Application Flow**: View comprehensive role responsibilities and requirements; apply with an uploaded PDF resume and optional custom cover note; duplicate applications prevented at database level.
 - **Candidate Portal (`/dashboard`)**:
@@ -220,10 +220,10 @@ erDiagram
 
 ## 5. Authentication & Security Architecture
 
-HireHub enforces defense-in-depth security at both network, middleware, and database boundaries:
+Jobify enforces defense-in-depth security at both network, middleware, and database boundaries:
 
 1. **Database-Backed Opaque Sessions**:
-   - Authentication does NOT use stateless JWTs. Instead, login issues an opaque, cryptographically random 256-bit token delivered via an `HttpOnly`, `SameSite=Lax`, `Path=/` cookie named `hirehub_session`.
+   - Authentication does NOT use stateless JWTs. Instead, login issues an opaque, cryptographically random 256-bit token delivered via an `HttpOnly`, `SameSite=Lax`, `Path=/` cookie named `jobify_session`.
    - The database stores only a one-way `SHA-256` hash of this token (`sessionTokenHash`).
    - Sessions carry an absolute expiration (`7 days`) and an idle timeout (`24 hours`). Each authenticated interaction refreshes `lastActiveAt`.
    - Logging in rotates the session ID to prevent session fixation.
@@ -422,17 +422,17 @@ To switch from `LocalStorageProvider` to AWS S3, Cloudflare R2, or Google Cloud 
 ```bash
 NODE_ENV=development
 PORT=5001
-DATABASE_URL=postgresql://hirehub:hirehub_secret@localhost:5435/hirehub?schema=public
-TEST_DATABASE_URL=postgresql://hirehub:hirehub_secret@localhost:5435/hirehub_test?schema=public
+DATABASE_URL=postgresql://jobify:jobify_secret@localhost:5435/jobify?schema=public
+TEST_DATABASE_URL=postgresql://jobify:jobify_secret@localhost:5435/jobify_test?schema=public
 CLIENT_ORIGIN=http://localhost:3000
-SESSION_SECRET=hirehub_super_secret_session_key_32chars_min!
+SESSION_SECRET=jobify_super_secret_session_key_32chars_min!
 CSRF_HEADER_NAME=X-Requested-With
 STORAGE_DRIVER=local
 UPLOAD_DIR=./uploads
 MAX_FILE_SIZE_BYTES=5242880
-POSTGRES_USER=hirehub
-POSTGRES_PASSWORD=hirehub_secret
-POSTGRES_DB=hirehub
+POSTGRES_USER=jobify
+POSTGRES_PASSWORD=jobify_secret
+POSTGRES_DB=jobify
 POSTGRES_PORT=5435
 ```
 
@@ -452,14 +452,14 @@ BACKEND_INTERNAL_URL=http://localhost:5001
 
 ### 1. Clone & Scaffold
 ```bash
-git clone https://github.com/shresthkumar/hirehub.git
-cd hirehub
+git clone https://github.com/shresthkumar/jobify.git
+cd jobify
 npm install
 ```
 
 ### 2. Start PostgreSQL via Docker Compose
 ```bash
-# Starts PostgreSQL 16 on port 5435 with both dev (hirehub) and test (hirehub_test) databases
+# Starts PostgreSQL 16 on port 5435 with both dev (jobify) and test (jobify_test) databases
 npm run db:up
 ```
 
@@ -472,7 +472,7 @@ npm run db:migrate
 npm run db:seed
 
 # Also seed test database for isolated Vitest runs
-DATABASE_URL="postgresql://hirehub:hirehub_secret@localhost:5435/hirehub_test?schema=public" npm run prisma:seed --workspace=backend
+DATABASE_URL="postgresql://jobify:jobify_secret@localhost:5435/jobify_test?schema=public" npm run prisma:seed --workspace=backend
 ```
 
 ### 4. Run Both Applications in Development
@@ -490,23 +490,23 @@ All seeded passwords are set up with authentic Argon2id hashes:
 
 | Role | Email | Password | Context |
 |:---|:---|:---|:---|
-| **System Admin** | `admin@hirehub.dev` | `AdminPass123!` | Platform Superuser (Access to `/admin`) |
+| **System Admin** | `admin@jobify.dev` | `AdminPass123!` | Platform Superuser (Access to `/admin`) |
 | **Employer (Owner)** | `sarah.owner@techflow.example.com` | `EmployerPass123!` | TechFlow Solutions (`verified: true`) |
 | **Employer (Recruiter)** | `dave.recruiter@techflow.example.com` | `EmployerPass123!` | TechFlow Solutions (Recruiter permissions) |
 | **Employer (Owner)** | `elena.owner@acmecloud.example.com` | `EmployerPass123!` | Acme Cloud Systems (`verified: true`) |
 | **Employer (Unverified)**| `marcus.owner@stealthai.example.com` | `EmployerPass123!` | StealthAI Corp (`verified: false` - Drafts only) |
-| **Job Seeker** | `alex.dev@hirehub.dev` | `SeekerPass123!` | Senior Staff Candidate with active applications |
-| **Job Seeker** | `maya.designer@hirehub.dev` | `SeekerPass123!` | Product Designer candidate with saved jobs |
-| **Job Seeker** | `jordan.cloud@hirehub.dev` | `SeekerPass123!` | Cloud Architect candidate |
-| **Job Seeker** | `claire.junior@hirehub.dev` | `SeekerPass123!` | Junior Developer candidate |
-| **Suspended Seeker** | `sam.suspended@hirehub.dev` | `SeekerPass123!` | Suspended user (Login blocked with 403) |
+| **Job Seeker** | `alex.dev@jobify.dev` | `SeekerPass123!` | Senior Staff Candidate with active applications |
+| **Job Seeker** | `maya.designer@jobify.dev` | `SeekerPass123!` | Product Designer candidate with saved jobs |
+| **Job Seeker** | `jordan.cloud@jobify.dev` | `SeekerPass123!` | Cloud Architect candidate |
+| **Job Seeker** | `claire.junior@jobify.dev` | `SeekerPass123!` | Junior Developer candidate |
+| **Suspended Seeker** | `sam.suspended@jobify.dev` | `SeekerPass123!` | Suspended user (Login blocked with 403) |
 
 ---
 
 ## 13. Testing Suite (Vitest & Playwright E2E)
 
 ### Backend Tests (Vitest & Supertest)
-Backend integration tests run against the isolated `hirehub_test` database. Tests strictly refuse to execute if `DATABASE_URL` does not point to a database containing `test` in its name.
+Backend integration tests run against the isolated `jobify_test` database. Tests strictly refuse to execute if `DATABASE_URL` does not point to a database containing `test` in its name.
 
 ```bash
 # Run all 80 backend integration tests

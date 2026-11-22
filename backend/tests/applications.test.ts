@@ -16,7 +16,7 @@ describe('Applications & Saved Jobs Module', () => {
     const mayaRes = await request(app)
       .post('/api/v1/auth/login')
       .set('X-Requested-With', 'XMLHttpRequest')
-      .send({ email: 'maya.designer@hirehub.dev', password: 'SeekerPass123!' });
+      .send({ email: 'maya.designer@jobify.dev', password: 'SeekerPass123!' });
     const rawMaya = mayaRes.headers['set-cookie'] as unknown as string[];
     mayaSeekerCookie = Array.isArray(rawMaya) ? rawMaya.join('; ') : String(rawMaya);
 
@@ -29,12 +29,12 @@ describe('Applications & Saved Jobs Module', () => {
     sarahEmployerCookie = Array.isArray(rawSarah) ? rawSarah.join('; ') : String(rawSarah);
 
     const alexFile = await prisma.storedFile.findFirst({
-      where: { owner: { email: 'alex.dev@hirehub.dev' } },
+      where: { owner: { email: 'alex.dev@jobify.dev' } },
     });
     alexResumeId = alexFile!.id;
 
     const mayaFile = await prisma.storedFile.findFirst({
-      where: { owner: { email: 'maya.designer@hirehub.dev' } },
+      where: { owner: { email: 'maya.designer@jobify.dev' } },
     });
     mayaResumeId = mayaFile!.id;
 
@@ -57,7 +57,7 @@ describe('Applications & Saved Jobs Module', () => {
     it('submits a valid application to a published job', async () => {
       // Ensure clean state for this test
       await prisma.application.deleteMany({
-        where: { jobId: publishedJobId, applicant: { email: 'maya.designer@hirehub.dev' } },
+        where: { jobId: publishedJobId, applicant: { email: 'maya.designer@jobify.dev' } },
       });
 
       const res = await request(app)
@@ -140,12 +140,12 @@ describe('Applications & Saved Jobs Module', () => {
         where: {
           company: { slug: 'techflow-solutions' },
           status: 'PUBLISHED',
-          applications: { none: { applicant: { email: 'claire.junior@hirehub.dev' } } },
+          applications: { none: { applicant: { email: 'claire.junior@jobify.dev' } } },
         },
       });
 
       const claire = await prisma.user.findUnique({
-        where: { email: 'claire.junior@hirehub.dev' },
+        where: { email: 'claire.junior@jobify.dev' },
         include: { files: true },
       });
 
@@ -234,7 +234,7 @@ describe('Applications & Saved Jobs Module', () => {
         where: { status: 'PUBLISHED', company: { slug: 'acme-cloud-labs' } },
       });
       const maya = await prisma.user.findUnique({
-        where: { email: 'maya.designer@hirehub.dev' },
+        where: { email: 'maya.designer@jobify.dev' },
         include: { files: true },
       });
 
@@ -265,20 +265,20 @@ describe('Applications & Saved Jobs Module', () => {
 
     it('blocks withdrawing an already WITHDRAWN application', async () => {
       await prisma.user.update({
-        where: { email: 'claire.junior@hirehub.dev' },
+        where: { email: 'claire.junior@jobify.dev' },
         data: { status: 'ACTIVE' },
       });
 
       const claireLogin = await request(app)
         .post('/api/v1/auth/login')
         .set('X-Requested-With', 'XMLHttpRequest')
-        .send({ email: 'claire.junior@hirehub.dev', password: 'SeekerPass123!' });
+        .send({ email: 'claire.junior@jobify.dev', password: 'SeekerPass123!' });
       expect(claireLogin.status).toBe(200);
       const rawClaire = claireLogin.headers['set-cookie'] as unknown as string[];
       const claireCookie = Array.isArray(rawClaire) ? rawClaire.join('; ') : String(rawClaire);
 
       const claire = await prisma.user.findUnique({
-        where: { email: 'claire.junior@hirehub.dev' },
+        where: { email: 'claire.junior@jobify.dev' },
         include: { files: true },
       });
       const anyJob = await prisma.job.findFirst({
@@ -317,7 +317,7 @@ describe('Applications & Saved Jobs Module', () => {
       await prisma.savedJob.deleteMany({
         where: {
           jobId: publishedJobId,
-          user: { email: 'maya.designer@hirehub.dev' },
+          user: { email: 'maya.designer@jobify.dev' },
         },
       });
 

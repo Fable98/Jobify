@@ -9,7 +9,7 @@ process.env.NODE_ENV = 'test';
 if (process.env.TEST_DATABASE_URL) {
   process.env.DATABASE_URL = process.env.TEST_DATABASE_URL;
 } else if (!process.env.DATABASE_URL) {
-  process.env.DATABASE_URL = 'postgresql://hirehub:hirehub_secret@localhost:5435/hirehub_test?schema=public';
+  process.env.DATABASE_URL = 'postgresql://jobify:jobify_secret@localhost:5435/jobify_test?schema=public';
 }
 
 if (!process.env.SESSION_SECRET) {

@@ -33,7 +33,7 @@ describe('Jobs Module & Search Engine', () => {
     const alexRes = await request(app)
       .post('/api/v1/auth/login')
       .set('X-Requested-With', 'XMLHttpRequest')
-      .send({ email: 'alex.dev@hirehub.dev', password: 'SeekerPass123!' });
+      .send({ email: 'alex.dev@jobify.dev', password: 'SeekerPass123!' });
     const rawAlex = alexRes.headers['set-cookie'] as unknown as string[];
     alexSeekerCookie = Array.isArray(rawAlex) ? rawAlex.join('; ') : String(rawAlex);
 

@@ -7,6 +7,6 @@ describe('Health API', () => {
     const res = await request(app).get('/api/v1/health');
     expect(res.status).toBe(200);
     expect(res.body.data.status).toBe('ok');
-    expect(res.body.data.service).toBe('hirehub-backend');
+    expect(res.body.data.service).toBe('jobify-backend');
   });
 });

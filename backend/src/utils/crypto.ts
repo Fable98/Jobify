@@ -2,7 +2,7 @@ import crypto from 'crypto';
 import argon2 from 'argon2';
 
 // Pre-computed valid argon2id hash for constant-time dummy verification
-// Hash of "HireHubDummyPassword2026!"
+// Hash of "JobifyDummyPassword2026!"
 export const DUMMY_ARGON2_HASH =
   '$argon2id$v=19$m=65536,t=3,p=4$6uP8L7P3J2W8d0K1Q2R3S4$y9z9A8B7C6D5E4F3G2H1I0J9K8L7M6N5O4P3Q2R1S0T';
 

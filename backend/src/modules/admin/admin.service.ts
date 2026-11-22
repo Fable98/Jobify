@@ -59,7 +59,7 @@ export class AdminService {
     }
 
     // Protect self / system admin from being suspended accidentally
-    if (user.email === 'admin@hirehub.dev' && input.status === UserStatus.SUSPENDED) {
+    if (user.email === 'admin@jobify.dev' && input.status === UserStatus.SUSPENDED) {
       throw new BadRequestError('Cannot suspend the primary system administrator account');
     }
 

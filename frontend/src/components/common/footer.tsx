@@ -36,7 +36,7 @@ export function Footer() {
         </div>
 
         <div className="mt-8 border-t border-slate-100 pt-6 text-center text-xs text-slate-400">
-          <p>© {new Date().getFullYear()} HireHub Inc. Accessible WCAG AA Compliant Engineering Platform.</p>
+          <p>© {new Date().getFullYear()} Jobify Inc. Accessible WCAG AA Compliant Engineering Platform.</p>
         </div>
       </div>
     </footer>

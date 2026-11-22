@@ -29,7 +29,7 @@ export default function CompaniesPage() {
           Verified Companies
         </h1>
         <p className="mt-2 text-sm text-slate-600 max-w-xl">
-          Discover top technology workplaces vetted by HireHub for verified identities, authentic salary disclosures, and responsive hiring standards.
+          Discover top technology workplaces vetted by Jobify for verified identities, authentic salary disclosures, and responsive hiring standards.
         </p>
 
         {/* Search input */}
