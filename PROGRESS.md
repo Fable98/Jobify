@@ -230,6 +230,21 @@
   - `npm test`: 73 tests passed across 7 test suites
   - `npm run build:frontend`: Production build generated 17 static & dynamic routes cleanly
 
+### Phase 12: Admin dashboard
+- Status: **COMPLETED**
+- Implemented full platform governance portal under `/admin`:
+  - `/admin/layout`: Superuser authentication guard, persistent status banner with active admin identity, and dedicated administrative navigation.
+  - `/admin/dashboard`: Real-time system telemetry consuming `GET /api/v1/admin/stats` (total accounts, verified organizations, active job postings, application submissions, database round-trip latency) with breakdown panels by user role, job status, finite-state application pipeline, and a live read-only application audit stream (`GET /api/v1/admin/applications`).
+  - `/admin/users`: User governance table with debounced search, role filter (`ADMIN`, `EMPLOYER`, `JOB_SEEKER`), status filter (`ACTIVE`, `SUSPENDED`), and one-click account suspension/reactivation (`PATCH /api/v1/admin/users/:id/status`) that terminates all active sessions for suspended users.
+  - `/admin/companies`: Organization verification dashboard with search, verification filter, member/owner inspect, and instant verification toggles (`PATCH /api/v1/admin/companies/:id/verify`) allowing trusted employers to publish public listings.
+  - `/admin/jobs`: Platform-wide job moderation table with debounced search, status filter, and moderate/restore actions (`PATCH /api/v1/admin/jobs/:id/moderate`) ensuring non-compliant posts are removed from public discovery.
+- Command validation:
+  - `npm run typecheck`: Passed cleanly across all workspaces
+  - `npm run lint`: Passed with 0 errors and 0 warnings
+  - `npm test`: 73 tests passed across 7 test suites (health, auth, companies, jobs, files, applications, admin)
+  - `npm run build:frontend`: Production build generated 21 static & dynamic routes cleanly
+
+
 
 
 
