@@ -1,12 +1,21 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, beforeAll } from 'vitest';
 import request from 'supertest';
 import { app } from '../src/app';
+import { prisma } from '../src/utils/prisma';
 
 describe('Companies & Members Module', () => {
   let sarahOwnerCookie: string;
   let daveRecruiterCookie: string;
   let alexSeekerCookie: string;
   let techFlowId: string;
+
+  beforeAll(async () => {
+    // Ensure stealthai-corp is unverified
+    await prisma.company.update({
+      where: { slug: 'stealthai-corp' },
+      data: { verified: false },
+    });
+  });
 
   it('authenticates seed users to obtain cookies', async () => {
     // Sarah (TechFlow OWNER)

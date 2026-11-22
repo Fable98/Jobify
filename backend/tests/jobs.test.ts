@@ -40,6 +40,11 @@ describe('Jobs Module & Search Engine', () => {
     const tf = await prisma.company.findUnique({ where: { slug: 'techflow-solutions' } });
     techFlowId = tf!.id;
 
+    await prisma.company.update({
+      where: { slug: 'stealthai-corp' },
+      data: { verified: false },
+    });
+
     const sa = await prisma.company.findUnique({ where: { slug: 'stealthai-corp' } });
     stealthAiId = sa!.id;
 

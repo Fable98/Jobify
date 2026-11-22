@@ -12,6 +12,8 @@ import { jobsRouter } from './modules/jobs/jobs.routes';
 import { filesRouter } from './modules/files/files.routes';
 import { applicationsRouter } from './modules/applications/applications.routes';
 import { savedJobsRouter } from './modules/saved-jobs/saved-jobs.routes';
+import { adminRouter } from './modules/admin/admin.routes';
+import { statsRouter } from './modules/stats/stats.routes';
 import { jobsController } from './modules/jobs/jobs.controller';
 import { applicationsController } from './modules/applications/applications.controller';
 import { requireAuth, requireRole } from './middleware/auth';
@@ -50,6 +52,8 @@ app.use('/api/v1/jobs', jobsRouter);
 app.use('/api/v1/files', filesRouter);
 app.use('/api/v1/applications', applicationsRouter);
 app.use('/api/v1/saved-jobs', savedJobsRouter);
+app.use('/api/v1/admin', adminRouter);
+app.use('/api/v1/stats', statsRouter);
 
 // Section 5 direct aliases:
 // POST /api/v1/jobs/:jobId/apply

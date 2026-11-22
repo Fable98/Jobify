@@ -72,7 +72,7 @@ describe('Applications & Saved Jobs Module', () => {
       expect(res.status).toBe(201);
       expect(res.body.data.application.status).toBe('PENDING');
       expect(res.body.data.application.jobId).toBe(publishedJobId);
-      createdApplicationId = res.body.data.application.id;
+      expect(res.body.data.application.id).toBeDefined();
     });
 
     it('rejects duplicate application to the same job with 409 Conflict', async () => {
@@ -229,16 +229,33 @@ describe('Applications & Saved Jobs Module', () => {
 
   describe('Applicant Withdrawal', () => {
     it('allows seeker to withdraw their application from REVIEWING status', async () => {
-      // Find Maya's application
-      const mayaApp = await prisma.application.findFirst({
+      // Ensure Maya has an application with REVIEWING status
+      const testJob = await prisma.job.findFirst({
+        where: { status: 'PUBLISHED', company: { slug: 'acme-cloud-labs' } },
+      });
+      const maya = await prisma.user.findUnique({
+        where: { email: 'maya.designer@hirehub.dev' },
+        include: { files: true },
+      });
+
+      const mayaApp = await prisma.application.upsert({
         where: {
-          applicant: { email: 'maya.designer@hirehub.dev' },
+          jobId_applicantId: {
+            jobId: testJob!.id,
+            applicantId: maya!.id,
+          },
+        },
+        update: { status: 'REVIEWING' },
+        create: {
+          jobId: testJob!.id,
+          applicantId: maya!.id,
+          resumeFileId: maya!.files[0].id,
           status: 'REVIEWING',
         },
       });
 
       const res = await request(app)
-        .patch(`/api/v1/applications/${mayaApp!.id}/withdraw`)
+        .patch(`/api/v1/applications/${mayaApp.id}/withdraw`)
         .set('X-Requested-With', 'XMLHttpRequest')
         .set('Cookie', mayaSeekerCookie);
 
@@ -247,23 +264,45 @@ describe('Applications & Saved Jobs Module', () => {
     });
 
     it('blocks withdrawing an already WITHDRAWN application', async () => {
-      const withdrawnApp = await prisma.application.findFirst({
+      await prisma.user.update({
+        where: { email: 'claire.junior@hirehub.dev' },
+        data: { status: 'ACTIVE' },
+      });
+
+      const claireLogin = await request(app)
+        .post('/api/v1/auth/login')
+        .set('X-Requested-With', 'XMLHttpRequest')
+        .send({ email: 'claire.junior@hirehub.dev', password: 'SeekerPass123!' });
+      expect(claireLogin.status).toBe(200);
+      const rawClaire = claireLogin.headers['set-cookie'] as unknown as string[];
+      const claireCookie = Array.isArray(rawClaire) ? rawClaire.join('; ') : String(rawClaire);
+
+      const claire = await prisma.user.findUnique({
+        where: { email: 'claire.junior@hirehub.dev' },
+        include: { files: true },
+      });
+      const anyJob = await prisma.job.findFirst({
+        where: { status: 'PUBLISHED' },
+      });
+
+      const withdrawnApp = await prisma.application.upsert({
         where: {
-          applicant: { email: 'claire.junior@hirehub.dev' },
+          jobId_applicantId: {
+            jobId: anyJob!.id,
+            applicantId: claire!.id,
+          },
+        },
+        update: { status: 'WITHDRAWN' },
+        create: {
+          jobId: anyJob!.id,
+          applicantId: claire!.id,
+          resumeFileId: claire!.files[0].id,
           status: 'WITHDRAWN',
         },
       });
 
-      // Login as Claire
-      const claireRes = await request(app)
-        .post('/api/v1/auth/login')
-        .set('X-Requested-With', 'XMLHttpRequest')
-        .send({ email: 'claire.junior@hirehub.dev', password: 'SeekerPass123!' });
-      const rawClaire = claireRes.headers['set-cookie'] as unknown as string[];
-      const claireCookie = Array.isArray(rawClaire) ? rawClaire.join('; ') : String(rawClaire);
-
       const res = await request(app)
-        .patch(`/api/v1/applications/${withdrawnApp!.id}/withdraw`)
+        .patch(`/api/v1/applications/${withdrawnApp.id}/withdraw`)
         .set('X-Requested-With', 'XMLHttpRequest')
         .set('Cookie', claireCookie);
 
