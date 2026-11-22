@@ -10,7 +10,8 @@
 - [x] **Phase 6: Files**
 - [x] **Phase 7: Applications + saved jobs**
 - [x] **Phase 8: Stats + admin APIs**
-- [ ] **Phase 9: Frontend foundation, public pages**
+- [x] **Phase 9: Frontend foundation, public pages**
+- [ ] **Phase 10: Seeker dashboard**
 - [ ] **Phase 5: Jobs + search**
 - [ ] **Phase 6: Files**
 - [ ] **Phase 7: Applications + saved jobs**
@@ -178,6 +179,27 @@
   - `npm run typecheck`: Passed
   - `npm run lint`: Passed (0 warnings, 0 errors)
   - `npm test`: 73 tests passed across 7 test suites (health, auth, companies, jobs, files, applications, admin) in 2.88s
+
+### Phase 9: Frontend foundation, public pages
+- Status: **COMPLETED**
+- Scaffolded Next.js 15 App Router architecture with TanStack React Query, React Hook Form, and Zod validation:
+  - Custom design system based on Plus Jakarta Sans (headings) + Inter (body/UI) with Electric Indigo brand accent (`#4f46e5`).
+  - AuthContext and hook providing reactive session monitoring, role badges, and automatic cookie cleanup.
+  - Reusable `apiClient` with automatic CSRF `X-Requested-With` header injection and credentials handling.
+- Implemented public view routes:
+  - `/`: Hero landing page with feature cards, search shortcuts, and verified employer guarantee.
+  - `/jobs`: Comprehensive job discovery engine with multi-criteria sidebar (live keyword search, location, multi-select employment type, experience level, salary range overlap inputs, sort dropdown, pagination, loading skeletons, and empty states).
+  - `/jobs/[id]`: Detailed role specs with compensation tags, verified employer profile, responsive "Apply Now" modal with PDF resume picker/uploader, and optimistic save/unsave toggling.
+  - `/companies`: Directory of verified tech employers with location & industry tags.
+  - `/companies/[id]`: Full company profile with direct open positions listings.
+  - `/login`: Clean authenticated portal with validation and role-based redirecting (`JOB_SEEKER` -> `/dashboard`, `EMPLOYER` -> `/employer/dashboard`, `ADMIN` -> `/admin/dashboard`).
+  - `/register`: Interactive candidate/employer tab toggle registration.
+- Command validation:
+  - `npm run typecheck`: Passed
+  - `npm run lint`: Passed (0 warnings, 0 errors)
+  - `npm test`: 73 tests passed
+  - `npm run build:frontend`: Production build generated cleanly
+
 
 
 ### Phase 7: Applications + saved jobs
