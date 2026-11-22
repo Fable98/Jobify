@@ -36,7 +36,7 @@ interface Member {
 
 export default function EmployerCompanyPage() {
   const queryClient = useQueryClient();
-  const { user } = useAuth();
+  const { user, refetchUser } = useAuth();
   const [statusMsg, setStatusMsg] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
   const [inviteEmail, setInviteEmail] = useState('');
   const [inviteRole, setInviteRole] = useState<'OWNER' | 'RECRUITER'>('RECRUITER');
@@ -59,7 +59,7 @@ export default function EmployerCompanyPage() {
   const {
     register,
     handleSubmit,
-    formState: { isSubmitting },
+    formState: { errors, isSubmitting },
   } = useForm<CompanySettingsFormData>({
     resolver: zodResolver(companySettingsSchema),
     defaultValues: {
@@ -129,14 +129,137 @@ export default function EmployerCompanyPage() {
     },
   });
 
+  // Create company mutation for new employers
+  const createCompanyMutation = useMutation({
+    mutationFn: async (data: CompanySettingsFormData) => {
+      setStatusMsg(null);
+      const cleanData = {
+        name: data.name,
+        industry: data.industry?.trim() || undefined,
+        location: data.location?.trim() || undefined,
+        description: data.description?.trim() || undefined,
+        website: data.website?.trim() || undefined,
+        logoUrl: data.logoUrl?.trim() || undefined,
+      };
+      const res = await apiClient<{ company: { id: string } }>('/api/v1/companies', {
+        method: 'POST',
+        body: JSON.stringify(cleanData),
+      });
+      return res.data;
+    },
+    onSuccess: async () => {
+      await refetchUser();
+      queryClient.invalidateQueries({ queryKey: ['auth', 'me'] });
+      setStatusMsg({ type: 'success', text: 'Company registered successfully!' });
+    },
+    onError: (err: any) => {
+      setStatusMsg({ type: 'error', text: err.message || 'Failed to create company' });
+    },
+  });
+
   const members = membersData?.members || [];
 
   if (!primaryCompany) {
     return (
-      <div className="rounded-2xl border border-slate-200 bg-white p-8 text-center">
-        <Building2 className="mx-auto h-8 w-8 text-slate-400 mb-2" />
-        <h3 className="text-sm font-bold text-slate-800">No company attached</h3>
-        <p className="text-xs text-slate-500 mt-1">Please register or join a company.</p>
+      <div className="space-y-6 max-w-2xl mx-auto py-4">
+        <div>
+          <h2 className="text-xl font-bold text-slate-900 font-heading">
+            Register Your Organization
+          </h2>
+          <p className="mt-1 text-xs text-slate-500">
+            Create your company profile to post jobs and review candidates on HireHub.
+          </p>
+        </div>
+
+        {statusMsg && (
+          <div
+            className={`rounded-xl p-3.5 text-xs font-semibold border ${
+              statusMsg.type === 'success'
+                ? 'bg-emerald-50 text-emerald-800 border-emerald-200'
+                : 'bg-red-50 text-red-800 border-red-200'
+            }`}
+          >
+            {statusMsg.text}
+          </div>
+        )}
+
+        <form
+          onSubmit={handleSubmit((d) => createCompanyMutation.mutate(d))}
+          className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-8 shadow-sm space-y-4"
+        >
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Company Name *
+            </label>
+            <input
+              type="text"
+              {...register('name')}
+              placeholder="e.g. Acme Innovations Inc."
+              className="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs text-slate-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            />
+            {errors.name && (
+              <p className="mt-1 text-[11px] text-red-600">{errors.name.message}</p>
+            )}
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Industry
+              </label>
+              <input
+                type="text"
+                {...register('industry')}
+                placeholder="e.g. Enterprise Cloud Software"
+                className="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs text-slate-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-semibold text-slate-700 mb-1">
+                Location
+              </label>
+              <input
+                type="text"
+                {...register('location')}
+                placeholder="e.g. San Francisco, CA"
+                className="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs text-slate-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+              />
+            </div>
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Website URL
+            </label>
+            <input
+              type="text"
+              {...register('website')}
+              placeholder="https://acme.example.com"
+              className="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs text-slate-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            />
+          </div>
+
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              Description
+            </label>
+            <textarea
+              rows={3}
+              {...register('description')}
+              placeholder="Tell candidates about your company mission and culture..."
+              className="w-full rounded-xl border border-slate-200 py-2.5 px-3 text-xs text-slate-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+            />
+          </div>
+
+          <button
+            type="submit"
+            disabled={createCompanyMutation.isPending}
+            className="w-full rounded-xl bg-brand-600 py-2.5 text-xs font-bold text-white shadow-md shadow-brand-600/20 hover:bg-brand-500 transition-colors disabled:opacity-50"
+          >
+            {createCompanyMutation.isPending ? 'Registering Company...' : 'Register Company'}
+          </button>
+        </form>
       </div>
     );
   }
