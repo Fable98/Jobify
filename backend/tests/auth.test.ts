@@ -90,22 +90,24 @@ describe('Auth & Session System', () => {
     });
 
     it('rejects registration with duplicate email', async () => {
+      const email = `test.auth.dup-${Date.now()}@example.com`;
       // First registration
-      await request(app)
+      const firstRes = await request(app)
         .post('/api/v1/auth/register')
         .set('X-Requested-With', 'XMLHttpRequest')
         .send({
-          email: 'test.auth.dup@example.com',
+          email,
           password: 'SecurePassword123!',
           role: 'JOB_SEEKER',
         });
+      expect(firstRes.status).toBe(201);
 
       // Duplicate registration
       const res = await request(app)
         .post('/api/v1/auth/register')
         .set('X-Requested-With', 'XMLHttpRequest')
         .send({
-          email: 'test.auth.dup@example.com',
+          email,
           password: 'SecurePassword123!',
           role: 'JOB_SEEKER',
         });

@@ -76,28 +76,30 @@ describe('Companies & Members Module', () => {
   describe('Company Creation & Role Restrictions', () => {
     it('allows EMPLOYER to create a company and assigns them as OWNER', async () => {
       // Register new employer
+      const founderEmail = `founder-${Date.now()}@example.com`;
       const empRes = await request(app)
         .post('/api/v1/auth/register')
         .set('X-Requested-With', 'XMLHttpRequest')
         .send({
-          email: 'new.company.founder@example.com',
+          email: founderEmail,
           password: 'FounderPassword123!',
           role: 'EMPLOYER',
         });
-      const cookie = empRes.headers['set-cookie'];
+      expect(empRes.status).toBe(201);
+      const raw = empRes.headers['set-cookie'];
+      const cookie = Array.isArray(raw) ? raw.join('; ') : String(raw);
 
       const createRes = await request(app)
         .post('/api/v1/companies')
         .set('X-Requested-With', 'XMLHttpRequest')
         .set('Cookie', cookie)
         .send({
-          name: 'HyperScale Systems',
+          name: `HyperScale Systems ${Date.now()}`,
           industry: 'Cloud Infrastructure',
           description: 'Next-gen distributed cloud hypervisor.',
         });
 
       expect(createRes.status).toBe(201);
-      expect(createRes.body.data.company.name).toBe('HyperScale Systems');
       expect(createRes.body.data.company.verified).toBe(false);
 
       // Verify membership

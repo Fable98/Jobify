@@ -8,6 +8,10 @@ import { AppError } from './utils/errors';
 import { authRouter } from './modules/auth/auth.routes';
 import { usersRouter } from './modules/users/users.routes';
 import { companiesRouter } from './modules/companies/companies.routes';
+import { jobsRouter } from './modules/jobs/jobs.routes';
+import { jobsController } from './modules/jobs/jobs.controller';
+import { requireAuth, requireRole } from './middleware/auth';
+import { Role } from '@prisma/client';
 
 export const app = express();
 
@@ -37,6 +41,15 @@ app.get('/api/v1/health', (_req: Request, res: Response) => {
 app.use('/api/v1/auth', authRouter);
 app.use('/api/v1/users', usersRouter);
 app.use('/api/v1/companies', companiesRouter);
+app.use('/api/v1/jobs', jobsRouter);
+
+// Section 5 alias: GET /employer/jobs
+app.get(
+  '/api/v1/employer/jobs',
+  requireAuth,
+  requireRole(Role.EMPLOYER, Role.ADMIN),
+  jobsController.getEmployerJobs
+);
 
 // 404 handler for unmatched routes
 app.use((_req: Request, res: Response) => {

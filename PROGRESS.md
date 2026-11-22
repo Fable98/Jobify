@@ -6,7 +6,8 @@
 - [x] **Phase 2: Prisma schema, migration, seed**
 - [x] **Phase 3: Auth + sessions + RBAC middleware**
 - [x] **Phase 4: Companies + members**
-- [ ] **Phase 5: Jobs + search**
+- [x] **Phase 5: Jobs + search**
+- [ ] **Phase 6: Files**
 - [ ] **Phase 5: Jobs + search**
 - [ ] **Phase 6: Files**
 - [ ] **Phase 7: Applications + saved jobs**
@@ -113,6 +114,28 @@
   - `npm run typecheck`: Passed
   - `npm run lint`: Passed
   - `npm test`: 26 tests passed across 3 test suites (health, auth, companies)
+
+### Phase 5: Jobs + search
+- Status: **COMPLETED**
+- Implemented production Jobs module with full search, filtering, salary range overlap, pagination, and RBAC:
+  - Public search endpoint `GET /api/v1/jobs` with case-insensitive search across title, description, company name, and location.
+  - Multi-criteria filtering: employment types, experience levels, salary range overlap (`job.salaryMax >= minSalary AND job.salaryMin <= maxSalary`), and company filters.
+  - Enforced company verification gate: unverified companies cannot publish jobs (`UNVERIFIED_COMPANY`, 403 Forbidden); only DRAFT status allowed until verified.
+  - Unpublished job existence protection: draft, closed, or removed jobs return 404 to public/non-members (no existence leak); company members can view their own company's drafts.
+  - Job deletion rules: deleting a job with applications is strictly rejected (`CANNOT_DELETE_JOB_WITH_APPLICATIONS`, 400 Bad Request); jobs without applications can be hard-deleted.
+  - Employer endpoint `GET /api/v1/employer/jobs` (and `/api/v1/jobs/employer/all`) returning all jobs across statuses with applicant counts.
+- Endpoints implemented:
+  - `POST /api/v1/jobs`: create job (draft or published with verification check)
+  - `GET /api/v1/jobs`: public listing with search/filter/sort/pagination
+  - `GET /api/v1/jobs/:id`: retrieve single job with visibility controls
+  - `PATCH /api/v1/jobs/:id`: edit job details, publish, or close
+  - `DELETE /api/v1/jobs/:id`: delete job with application protection
+  - `GET /api/v1/employer/jobs`: employer job dashboard listing
+- Command validation:
+  - `npm run typecheck`: Passed
+  - `npm run lint`: Passed (0 warnings, 0 errors)
+  - `npm test`: 41 tests passed across 4 test suites (health, auth, companies, jobs)
+
 
 
 
