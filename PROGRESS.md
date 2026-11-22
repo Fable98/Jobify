@@ -5,7 +5,8 @@
 - [x] **Phase 1: Scaffold + Docker + env validation**
 - [x] **Phase 2: Prisma schema, migration, seed**
 - [x] **Phase 3: Auth + sessions + RBAC middleware**
-- [ ] **Phase 4: Companies + members**
+- [x] **Phase 4: Companies + members**
+- [ ] **Phase 5: Jobs + search**
 - [ ] **Phase 5: Jobs + search**
 - [ ] **Phase 6: Files**
 - [ ] **Phase 7: Applications + saved jobs**
@@ -87,6 +88,32 @@
   - `npm run typecheck`: Passed (both frontend and backend clean)
   - `npm run lint`: Passed (0 warnings, 0 errors)
   - `npm test`: 14 tests passed across 2 test suites (health and auth)
+
+### Phase 4: Companies + members
+- Status: **COMPLETED**
+- Implemented Companies module and Users/profile management.
+- Enforced company-level RBAC:
+  - Only EMPLOYER or ADMIN users can register companies; creators are automatically made `OWNER`.
+  - OWNER can manage company settings, invite members, change roles, and remove members.
+  - RECRUITER can view company members and manage jobs, but cannot edit company settings or manage memberships (403 Forbidden).
+  - Last-owner protection rule: a company must always retain at least one OWNER; demoting or removing the final owner is blocked with 400 (`LAST_OWNER_PROTECTION`).
+- Enforced privacy for unverified companies: unverified company profiles return 404 to non-members/anonymous users to avoid existence leaks.
+- Endpoints implemented:
+  - `POST /api/v1/companies`: create company
+  - `GET /api/v1/companies`: public list of verified companies with search/filters & pagination
+  - `GET /api/v1/companies/:id`: view company details (with unverified privacy protection)
+  - `PATCH /api/v1/companies/:id`: update company details (OWNER/ADMIN only)
+  - `GET /api/v1/companies/:id/jobs`: list company jobs
+  - `GET /api/v1/companies/:id/members`: list members
+  - `POST /api/v1/companies/:id/members`: invite/add member (EMPLOYER role required)
+  - `PATCH /api/v1/companies/:id/members/:memberId`: update member role (with last-owner protection)
+  - `DELETE /api/v1/companies/:id/members/:memberId`: remove member (with last-owner protection)
+  - `GET /api/v1/users/me` & `PATCH /api/v1/users/me`: get and update job seeker profiles
+- Command validation:
+  - `npm run typecheck`: Passed
+  - `npm run lint`: Passed
+  - `npm test`: 26 tests passed across 3 test suites (health, auth, companies)
+
 
 
 

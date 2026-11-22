@@ -6,6 +6,8 @@ import { ZodError } from 'zod';
 import { env } from './config/env';
 import { AppError } from './utils/errors';
 import { authRouter } from './modules/auth/auth.routes';
+import { usersRouter } from './modules/users/users.routes';
+import { companiesRouter } from './modules/companies/companies.routes';
 
 export const app = express();
 
@@ -33,6 +35,8 @@ app.get('/api/v1/health', (_req: Request, res: Response) => {
 
 // Mounted Routes
 app.use('/api/v1/auth', authRouter);
+app.use('/api/v1/users', usersRouter);
+app.use('/api/v1/companies', companiesRouter);
 
 // 404 handler for unmatched routes
 app.use((_req: Request, res: Response) => {
