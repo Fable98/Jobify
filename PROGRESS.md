@@ -3,7 +3,7 @@
 ## Phases & Status
 
 - [x] **Phase 1: Scaffold + Docker + env validation**
-- [ ] **Phase 2: Prisma schema, migration, seed**
+- [x] **Phase 2: Prisma schema, migration, seed**
 - [ ] **Phase 3: Auth + sessions + RBAC middleware**
 - [ ] **Phase 4: Companies + members**
 - [ ] **Phase 5: Jobs + search**
@@ -48,4 +48,25 @@
   - `npm run typecheck`: Passed (both backend and frontend clean `tsc --noEmit`)
   - `npm run lint`: Passed (backend ESLint 0 warnings/errors, frontend Next lint 0 warnings/errors)
   - `npm test`: Passed (`Health API > GET /api/v1/health returns status ok` in Vitest)
+
+### Phase 2: Prisma schema, migration, seed
+- Status: **COMPLETED**
+- Designed production Prisma schema with UUID primary keys, role enums (Role, UserStatus, CompanyMemberRole, EmploymentType, ExperienceLevel, JobStatus, ApplicationStatus, FilePurpose), explicit foreign keys, cascading rules, and strategic database indexes.
+- Created and executed initial database migration `20261122130736_init` against PostgreSQL.
+- Synchronized schema to separate test database `hirehub_test`.
+- Authored and ran realistic database seed (`prisma/seed.ts`):
+  - 1 System Admin (`admin@hirehub.dev`)
+  - 2 Verified Companies (TechFlow Solutions, Acme Cloud Labs) with owners and recruiters
+  - 1 Unverified Company (StealthAI Corp) for verification gating tests
+  - 17 realistic jobs across varied employment types, experience levels, and statuses (PUBLISHED, DRAFT, CLOSED, REMOVED)
+  - 4 Active Job Seekers with rich profiles, skills, and sample PDF resumes, plus 1 SUSPENDED seeker
+  - Multiple applications demonstrating varied lifecycle statuses (PENDING, REVIEWING, SHORTLISTED, ACCEPTED, REJECTED, WITHDRAWN)
+  - Saved jobs relations
+- Command validation:
+  - `cd backend && npx prisma migrate dev --name init`: Migration applied, Prisma Client generated
+  - `npm run prisma:seed`: Finished successfully with 0 errors
+  - `npm run typecheck`: Passed
+  - `npm run lint`: Passed
+  - `npm test`: Passed
+
 

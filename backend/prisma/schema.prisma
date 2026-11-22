@@ -1,0 +1,234 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  JOB_SEEKER
+  EMPLOYER
+  ADMIN
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+}
+
+enum CompanyMemberRole {
+  OWNER
+  RECRUITER
+}
+
+enum EmploymentType {
+  FULL_TIME
+  PART_TIME
+  CONTRACT
+  INTERNSHIP
+  REMOTE
+}
+
+enum ExperienceLevel {
+  ENTRY
+  JUNIOR
+  MID
+  SENIOR
+  LEAD
+}
+
+enum JobStatus {
+  DRAFT
+  PUBLISHED
+  CLOSED
+  REMOVED
+}
+
+enum ApplicationStatus {
+  PENDING
+  REVIEWING
+  SHORTLISTED
+  REJECTED
+  ACCEPTED
+  WITHDRAWN
+}
+
+enum FilePurpose {
+  RESUME
+  COMPANY_LOGO
+  OTHER
+}
+
+model User {
+  id           String      @id @default(uuid())
+  email        String      @unique
+  passwordHash String
+  role         Role
+  status       UserStatus  @default(ACTIVE)
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+
+  sessions           Session[]
+  profile            JobSeekerProfile?
+  companyMemberships CompanyMember[]
+  applications       Application[]
+  savedJobs          SavedJob[]
+  files              StoredFile[]
+
+  @@index([email])
+  @@index([role])
+  @@index([status])
+}
+
+model Session {
+  id               String   @id @default(uuid())
+  sessionTokenHash String   @unique
+  userId           String
+  user             User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  expiresAt        DateTime
+  lastActiveAt     DateTime @default(now())
+  createdAt        DateTime @default(now())
+
+  @@index([sessionTokenHash])
+  @@index([userId])
+  @@index([expiresAt])
+}
+
+model JobSeekerProfile {
+  id                  String      @id @default(uuid())
+  userId              String      @unique
+  user                User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  headline            String?
+  bio                 String?
+  skills              String[]    @default([])
+  location            String?
+  defaultResumeFileId String?
+  defaultResume       StoredFile? @relation("DefaultResume", fields: [defaultResumeFileId], references: [id], onDelete: SetNull)
+  createdAt           DateTime    @default(now())
+  updatedAt           DateTime    @updatedAt
+
+  @@index([userId])
+}
+
+model Company {
+  id          String   @id @default(uuid())
+  name        String
+  slug        String   @unique
+  description String?
+  website     String?
+  industry    String?
+  location    String?
+  logoFileId  String?
+  logoUrl     String?
+  verified    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  members CompanyMember[]
+  jobs    Job[]
+
+  @@index([slug])
+  @@index([verified])
+}
+
+model CompanyMember {
+  id        String            @id @default(uuid())
+  userId    String
+  user      User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  companyId String
+  company   Company           @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  role      CompanyMemberRole
+  createdAt DateTime          @default(now())
+  updatedAt DateTime          @updatedAt
+
+  @@unique([userId, companyId])
+  @@index([userId])
+  @@index([companyId])
+}
+
+model Job {
+  id                  String          @id @default(uuid())
+  companyId           String
+  company             Company         @relation(fields: [companyId], references: [id], onDelete: Cascade)
+  title               String
+  description         String
+  requirements        String
+  responsibilities    String
+  location            String
+  employmentType      EmploymentType
+  experienceLevel     ExperienceLevel
+  salaryMin           Decimal?        @db.Decimal(12, 2)
+  salaryMax           Decimal?        @db.Decimal(12, 2)
+  salaryCurrency      String          @default("USD")
+  status              JobStatus       @default(DRAFT)
+  publishedAt         DateTime?
+  applicationDeadline DateTime?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+
+  applications Application[]
+  savedByUsers SavedJob[]
+
+  @@index([companyId])
+  @@index([status])
+  @@index([location])
+  @@index([employmentType])
+  @@index([experienceLevel])
+  @@index([salaryMin, salaryMax])
+  @@index([publishedAt])
+  @@index([createdAt])
+}
+
+model Application {
+  id           String            @id @default(uuid())
+  jobId        String
+  job          Job               @relation(fields: [jobId], references: [id], onDelete: Restrict)
+  applicantId  String
+  applicant    User              @relation(fields: [applicantId], references: [id], onDelete: Restrict)
+  resumeFileId String
+  resumeFile   StoredFile        @relation(fields: [resumeFileId], references: [id], onDelete: Restrict)
+  coverLetter  String?
+  status       ApplicationStatus @default(PENDING)
+  createdAt    DateTime          @default(now())
+  updatedAt    DateTime          @updatedAt
+
+  @@unique([jobId, applicantId])
+  @@index([jobId])
+  @@index([applicantId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model SavedJob {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  jobId     String
+  job       Job      @relation(fields: [jobId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, jobId])
+  @@index([userId])
+  @@index([jobId])
+}
+
+model StoredFile {
+  id           String      @id @default(uuid())
+  ownerId      String
+  owner        User        @relation(fields: [ownerId], references: [id], onDelete: Cascade)
+  storageKey   String      @unique
+  originalName String
+  mimeType     String
+  sizeBytes    Int
+  purpose      FilePurpose
+  createdAt    DateTime    @default(now())
+
+  applicationsAsResume Application[]
+  profilesAsResume     JobSeekerProfile[] @relation("DefaultResume")
+
+  @@index([ownerId])
+  @@index([purpose])
+  @@index([storageKey])
+}
