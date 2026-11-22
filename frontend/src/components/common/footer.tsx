@@ -12,7 +12,7 @@ export function Footer() {
               <Briefcase className="h-4 w-4" />
             </div>
             <span className="text-base font-bold text-slate-900 font-heading">
-              Hire<span className="text-brand-600">Hub</span>
+              Job<span className="text-brand-600">ify</span>
             </span>
             <span className="text-xs text-slate-500 ml-2">
               Production-Grade Full-Stack Career Platform

@@ -34,7 +34,7 @@ export function Navbar() {
           </div>
           <div className="flex flex-col">
             <span className="text-xl font-bold tracking-tight text-slate-900 font-heading">
-              Hire<span className="text-brand-600">Hub</span>
+              Job<span className="text-brand-600">ify</span>
             </span>
           </div>
         </Link>
