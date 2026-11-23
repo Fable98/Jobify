@@ -11,9 +11,27 @@ const envSchema = z.object({
   CLIENT_ORIGIN: z.string().default('http://localhost:3000'),
   SESSION_SECRET: z.string().min(16, 'SESSION_SECRET must be at least 16 characters'),
   CSRF_HEADER_NAME: z.string().default('X-Requested-With'),
+  
+  // Storage Configuration
   STORAGE_DRIVER: z.enum(['local', 's3']).default('local'),
   UPLOAD_DIR: z.string().default('./uploads'),
   MAX_FILE_SIZE_BYTES: z.coerce.number().default(5242880), // 5MB
+  
+  // S3 / Cloudflare R2 / MinIO
+  S3_ENDPOINT: z.string().optional(),
+  S3_REGION: z.string().default('us-east-1'),
+  S3_BUCKET: z.string().optional(),
+  S3_ACCESS_KEY_ID: z.string().optional(),
+  S3_SECRET_ACCESS_KEY: z.string().optional(),
+  S3_FORCE_PATH_STYLE: z.preprocess((val) => val === 'true' || val === true, z.boolean()).default(false),
+
+  // Redis Distributed Cache & Sessions
+  REDIS_URL: z.string().default('redis://localhost:6379'),
+  ENABLE_REDIS: z.preprocess((val) => val === 'true' || val === true, z.boolean()).default(false),
+
+  // Transactional Email Service
+  RESEND_API_KEY: z.string().optional(),
+  EMAIL_FROM: z.string().default('Jobify <notifications@jobify.dev>'),
 });
 
 export type Env = z.infer<typeof envSchema>;

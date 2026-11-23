@@ -21,6 +21,15 @@ export class UsersController {
       next(err);
     }
   }
+
+  async exportData(req: Request, res: Response, next: NextFunction) {
+    try {
+      const result = await usersService.exportUserData(req.user!.id);
+      res.status(200).json({ data: result });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export const usersController = new UsersController();

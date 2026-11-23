@@ -5,6 +5,7 @@ import {
   NotFoundError,
   ConflictError,
 } from '../../utils/errors';
+import { emailService } from '../email/email.service';
 import {
   ApplyJobInput,
   UpdateApplicationStatusInput,
@@ -99,6 +100,34 @@ export class ApplicationsService {
         resumeFile: true,
       },
     });
+
+    // Dispatch confirmation email to applicant asynchronously
+    emailService
+      .sendApplicationSubmittedEmail(
+        user.email,
+        user.email.split('@')[0],
+        job.title,
+        job.company.name
+      )
+      .catch(() => {});
+
+    // Dispatch alert to employer members asynchronously
+    if (job.company.members && job.company.members.length > 0) {
+      const ownerMember = job.company.members[0];
+      prisma.user
+        .findUnique({ where: { id: ownerMember.userId }, select: { email: true } })
+        .then((recruiterUser) => {
+          if (recruiterUser) {
+            emailService.sendEmployerNewApplicationAlert(
+              recruiterUser.email,
+              recruiterUser.email.split('@')[0],
+              user.email.split('@')[0],
+              job.title
+            );
+          }
+        })
+        .catch(() => {});
+    }
 
     return { application };
   }
@@ -338,6 +367,17 @@ export class ApplicationsService {
         },
       },
     });
+
+    // Dispatch status update email to applicant asynchronously
+    emailService
+      .sendApplicationStatusUpdateEmail(
+        updated.applicant.email,
+        updated.applicant.email.split('@')[0],
+        updated.job.title,
+        application.job.company.name,
+        target
+      )
+      .catch(() => {});
 
     return { application: updated };
   }

@@ -1,9 +1,12 @@
 import express, { Request, Response, NextFunction } from 'express';
+import crypto from 'crypto';
 import helmet from 'helmet';
 import cors from 'cors';
 import cookieParser from 'cookie-parser';
+import pinoHttp from 'pino-http';
 import { ZodError } from 'zod';
 import { env } from './config/env';
+import { logger } from './utils/logger';
 import { AppError } from './utils/errors';
 import { authRouter } from './modules/auth/auth.routes';
 import { usersRouter } from './modules/users/users.routes';
@@ -21,6 +24,29 @@ import { csrfProtection } from './middleware/csrf';
 import { Role } from '@prisma/client';
 
 export const app = express();
+
+// Request Correlation ID Middleware
+app.use((req, res, next) => {
+  const reqId = (req.headers['x-request-id'] as string) || crypto.randomUUID();
+  req.headers['x-request-id'] = reqId;
+  res.setHeader('X-Request-Id', reqId);
+  next();
+});
+
+// Structured Request Logging (Pino)
+if (env.NODE_ENV !== 'test') {
+  app.use(
+    pinoHttp({
+      logger,
+      genReqId: (req) => (req.headers['x-request-id'] as string) || crypto.randomUUID(),
+      customLogLevel: (_req, res, err) => {
+        if (res.statusCode >= 500 || err) return 'error';
+        if (res.statusCode >= 400) return 'warn';
+        return 'info';
+      },
+    })
+  );
+}
 
 app.use(helmet());
 app.use(
@@ -128,8 +154,8 @@ app.use((err: any, _req: Request, res: Response, _next: NextFunction) => {
   const code = err.code || (statusCode === 500 ? 'INTERNAL_SERVER_ERROR' : 'BAD_REQUEST');
   const message = err.message || 'An unexpected error occurred';
 
-  if (env.NODE_ENV !== 'production' && statusCode === 500) {
-    console.error('Unhandled server error:', err);
+  if (statusCode === 500) {
+    logger.error({ err, reqId: _req.headers['x-request-id'] }, 'Unhandled server error');
   }
 
   res.status(statusCode).json({

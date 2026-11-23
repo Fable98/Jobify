@@ -18,6 +18,8 @@ import {
   SESSION_MAX_AGE_MS,
 } from '../../middleware/auth';
 import { env } from '../../config/env';
+import { redisService } from '../../utils/redis';
+import { emailService } from '../email/email.service';
 import { RegisterInput, LoginInput, UserResponse } from './auth.types';
 import { UserStatus } from '@prisma/client';
 
@@ -71,19 +73,30 @@ export class AuthService {
       },
     });
 
-    // Create session
+    // Create session in DB
     const rawToken = generateRandomToken(32);
     const tokenHash = hashToken(rawToken);
+    const expiresAt = new Date(Date.now() + SESSION_MAX_AGE_MS);
 
-    await prisma.session.create({
+    const session = await prisma.session.create({
       data: {
         sessionTokenHash: tokenHash,
         userId: user.id,
-        expiresAt: new Date(Date.now() + SESSION_MAX_AGE_MS),
+        expiresAt,
+      },
+      include: {
+        user: true,
       },
     });
 
+    // Cache in Redis for sub-millisecond lookup
+    const ttlSeconds = Math.max(1, Math.floor(SESSION_MAX_AGE_MS / 1000));
+    await redisService.set(`jobify:session:${tokenHash}`, JSON.stringify(session), ttlSeconds);
+
     this.setSessionCookie(res, rawToken);
+
+    // Send transactional welcome email asynchronously
+    emailService.sendWelcomeEmail(user.email, input.name || user.email.split('@')[0]).catch(() => {});
 
     return {
       user: {
@@ -124,6 +137,7 @@ export class AuthService {
     // Session rotation on login: delete old session if present
     if (existingCookieToken) {
       const oldHash = hashToken(existingCookieToken);
+      await redisService.del(`jobify:session:${oldHash}`);
       await prisma.session.deleteMany({
         where: { sessionTokenHash: oldHash },
       }).catch(() => {});
@@ -132,14 +146,22 @@ export class AuthService {
     // Issue new session
     const rawToken = generateRandomToken(32);
     const tokenHash = hashToken(rawToken);
+    const expiresAt = new Date(Date.now() + SESSION_MAX_AGE_MS);
 
-    await prisma.session.create({
+    const session = await prisma.session.create({
       data: {
         sessionTokenHash: tokenHash,
         userId: user.id,
-        expiresAt: new Date(Date.now() + SESSION_MAX_AGE_MS),
+        expiresAt,
+      },
+      include: {
+        user: true,
       },
     });
+
+    // Cache in Redis
+    const ttlSeconds = Math.max(1, Math.floor(SESSION_MAX_AGE_MS / 1000));
+    await redisService.set(`jobify:session:${tokenHash}`, JSON.stringify(session), ttlSeconds);
 
     this.setSessionCookie(res, rawToken);
 
@@ -157,6 +179,7 @@ export class AuthService {
   async logout(res: Response, cookieToken?: string): Promise<void> {
     if (cookieToken) {
       const tokenHash = hashToken(cookieToken);
+      await redisService.del(`jobify:session:${tokenHash}`);
       await prisma.session.deleteMany({
         where: { sessionTokenHash: tokenHash },
       }).catch(() => {});
@@ -219,8 +242,18 @@ export class AuthService {
       data: { passwordHash: newHash },
     });
 
-    // Invalidate all OTHER sessions for this user
+    // Invalidate sessions in Redis and DB
     if (currentSessionId) {
+      const otherSessions = await prisma.session.findMany({
+        where: {
+          userId,
+          id: { not: currentSessionId },
+        },
+        select: { sessionTokenHash: true },
+      });
+      for (const s of otherSessions) {
+        await redisService.del(`jobify:session:${s.sessionTokenHash}`);
+      }
       await prisma.session.deleteMany({
         where: {
           userId,
@@ -228,6 +261,13 @@ export class AuthService {
         },
       });
     } else {
+      const allSessions = await prisma.session.findMany({
+        where: { userId },
+        select: { sessionTokenHash: true },
+      });
+      for (const s of allSessions) {
+        await redisService.del(`jobify:session:${s.sessionTokenHash}`);
+      }
       await prisma.session.deleteMany({
         where: { userId },
       });

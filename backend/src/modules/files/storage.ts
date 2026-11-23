@@ -1,12 +1,21 @@
 import fs from 'fs';
 import path from 'path';
+import {
+  S3Client,
+  PutObjectCommand,
+  GetObjectCommand,
+  DeleteObjectCommand,
+} from '@aws-sdk/client-s3';
+import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { env } from '../../config/env';
 import { NotFoundError } from '../../utils/errors';
+import { logger } from '../../utils/logger';
 
 export interface StorageProvider {
   save(key: string, buffer: Buffer, mimeType: string): Promise<void>;
   stream(key: string): Promise<{ stream: NodeJS.ReadableStream; sizeBytes: number; mimeType: string }>;
   delete(key: string): Promise<void>;
+  getSignedUrl?(key: string, expiresInSeconds?: number): Promise<string>;
 }
 
 /**
@@ -52,25 +61,90 @@ export class LocalStorageProvider implements StorageProvider {
 }
 
 /**
- * S3 Storage Provider Reference Implementation:
- *
- * To enable Amazon S3 / Cloudflare R2 / MinIO:
- * 1. Install @aws-sdk/client-s3
- * 2. Implement the StorageProvider interface:
- *
- * export class S3StorageProvider implements StorageProvider {
- *   private client = new S3Client({ region: env.AWS_REGION });
- *   async save(key: string, buffer: Buffer, mimeType: string) {
- *     await this.client.send(new PutObjectCommand({ Bucket: env.S3_BUCKET, Key: key, Body: buffer, ContentType: mimeType }));
- *   }
- *   async stream(key: string) {
- *     const res = await this.client.send(new GetObjectCommand({ Bucket: env.S3_BUCKET, Key: key }));
- *     return { stream: res.Body as NodeJS.ReadableStream, sizeBytes: res.ContentLength ?? 0, mimeType: res.ContentType ?? 'application/pdf' };
- *   }
- *   async delete(key: string) {
- *     await this.client.send(new DeleteObjectCommand({ Bucket: env.S3_BUCKET, Key: key }));
- *   }
- * }
+ * AWS S3 / Cloudflare R2 / MinIO Storage Provider.
+ * Allows horizontal scaling across ephemeral compute instances.
  */
+export class S3StorageProvider implements StorageProvider {
+  private client: S3Client;
+  private bucket: string;
 
-export const storageProvider: StorageProvider = new LocalStorageProvider();
+  constructor() {
+    this.bucket = env.S3_BUCKET || 'jobify-resumes';
+    this.client = new S3Client({
+      region: env.S3_REGION,
+      endpoint: env.S3_ENDPOINT,
+      forcePathStyle: env.S3_FORCE_PATH_STYLE,
+      credentials:
+        env.S3_ACCESS_KEY_ID && env.S3_SECRET_ACCESS_KEY
+          ? {
+              accessKeyId: env.S3_ACCESS_KEY_ID,
+              secretAccessKey: env.S3_SECRET_ACCESS_KEY,
+            }
+          : undefined,
+    });
+    logger.info({ bucket: this.bucket, region: env.S3_REGION }, '[Storage] Initialized S3 storage provider');
+  }
+
+  async save(key: string, buffer: Buffer, mimeType: string): Promise<void> {
+    await this.client.send(
+      new PutObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+        Body: buffer,
+        ContentType: mimeType,
+      })
+    );
+  }
+
+  async stream(key: string): Promise<{ stream: NodeJS.ReadableStream; sizeBytes: number; mimeType: string }> {
+    try {
+      const res = await this.client.send(
+        new GetObjectCommand({
+          Bucket: this.bucket,
+          Key: key,
+        })
+      );
+
+      if (!res.Body) {
+        throw new NotFoundError('Underlying file object not found in S3 bucket');
+      }
+
+      return {
+        stream: res.Body as unknown as NodeJS.ReadableStream,
+        sizeBytes: res.ContentLength ?? 0,
+        mimeType: res.ContentType ?? 'application/pdf',
+      };
+    } catch (err: any) {
+      if (err.name === 'NoSuchKey' || err.$metadata?.httpStatusCode === 404) {
+        throw new NotFoundError('File not found in S3 bucket');
+      }
+      throw err;
+    }
+  }
+
+  async delete(key: string): Promise<void> {
+    await this.client.send(
+      new DeleteObjectCommand({
+        Bucket: this.bucket,
+        Key: key,
+      })
+    );
+  }
+
+  async getSignedUrl(key: string, expiresInSeconds = 900): Promise<string> {
+    const command = new GetObjectCommand({
+      Bucket: this.bucket,
+      Key: key,
+    });
+    return await getSignedUrl(this.client, command, { expiresIn: expiresInSeconds });
+  }
+}
+
+export function createStorageProvider(): StorageProvider {
+  if (env.STORAGE_DRIVER === 's3' && env.S3_BUCKET) {
+    return new S3StorageProvider();
+  }
+  return new LocalStorageProvider();
+}
+
+export const storageProvider: StorageProvider = createStorageProvider();

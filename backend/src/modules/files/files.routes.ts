@@ -45,5 +45,8 @@ filesRouter.post(
 // Stream file with strict authorization
 filesRouter.get('/:id', requireAuth, filesController.getFile);
 
+// Get presigned URL for direct object download (S3/R2)
+filesRouter.get('/:id/url', requireAuth, filesController.getPresignedUrl);
+
 // Delete file
 filesRouter.delete('/:id', requireAuth, csrfProtection, filesController.deleteFile);

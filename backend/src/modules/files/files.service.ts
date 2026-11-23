@@ -148,6 +148,46 @@ export class FilesService {
 
     return { message: 'File deleted successfully' };
   }
+
+  async getPresignedDownloadUrl(fileId: string, user: AuthenticatedUser) {
+    const file = await prisma.storedFile.findUnique({
+      where: { id: fileId },
+      include: {
+        applicationsAsResume: {
+          include: {
+            job: {
+              include: {
+                company: {
+                  include: { members: true },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+
+    if (!file) {
+      throw new NotFoundError('File not found');
+    }
+
+    const isOwner = file.ownerId === user.id;
+    const isAdmin = user.role === Role.ADMIN;
+    const isAuthorizedEmployer = file.applicationsAsResume.some((app) =>
+      app.job.company.members.some((m) => m.userId === user.id)
+    );
+
+    if (!isOwner && !isAdmin && !isAuthorizedEmployer) {
+      throw new ForbiddenError('Access denied: You do not have permission to access this file');
+    }
+
+    if (storageProvider.getSignedUrl) {
+      const url = await storageProvider.getSignedUrl(file.storageKey, 900);
+      return { url, expiresInSeconds: 900 };
+    }
+
+    return { url: `/api/v1/files/${file.id}`, expiresInSeconds: 900 };
+  }
 }
 
 export const filesService = new FilesService();

@@ -115,4 +115,24 @@ describe('Users & Stats Module', () => {
       expect(res.status).toBe(403);
     });
   });
+
+  describe('GDPR Compliance & Data Portability', () => {
+    it('GET /api/v1/users/me/export exports all user data while stripping passwordHash', async () => {
+      const res = await request(app)
+        .get('/api/v1/users/me/export')
+        .set('Cookie', alexSeekerCookie);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.exportData).toBeDefined();
+      expect(res.body.data.exportData.email).toBe('alex.dev@jobify.dev');
+      expect(res.body.data.exportData.passwordHash).toBeUndefined();
+      expect(res.body.data.exportData.profile).toBeDefined();
+      expect(res.body.data.exportedAt).toBeDefined();
+    });
+
+    it('blocks unauthenticated requests to /api/v1/users/me/export with 401', async () => {
+      const res = await request(app).get('/api/v1/users/me/export');
+      expect(res.status).toBe(401);
+    });
+  });
 });

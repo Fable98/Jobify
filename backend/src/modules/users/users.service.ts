@@ -67,6 +67,55 @@ export class UsersService {
 
     return { profile: updatedProfile };
   }
+
+  async exportUserData(userId: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: userId },
+      include: {
+        profile: {
+          include: { defaultResume: true },
+        },
+        applications: {
+          include: {
+            job: {
+              select: {
+                title: true,
+                company: { select: { name: true } },
+              },
+            },
+          },
+        },
+        savedJobs: {
+          include: {
+            job: {
+              select: {
+                title: true,
+                company: { select: { name: true } },
+              },
+            },
+          },
+        },
+        files: {
+          select: {
+            id: true,
+            originalName: true,
+            mimeType: true,
+            sizeBytes: true,
+            createdAt: true,
+          },
+        },
+      },
+    });
+
+    if (!user) {
+      throw new NotFoundError('User not found');
+    }
+
+    // Exclude passwordHash from export (GDPR data export compliance)
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const { passwordHash, ...safeUserData } = user;
+    return { exportData: safeUserData, exportedAt: new Date().toISOString() };
+  }
 }
 
 export const usersService = new UsersService();

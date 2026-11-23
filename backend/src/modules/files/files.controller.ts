@@ -41,6 +41,16 @@ export class FilesController {
       next(err);
     }
   }
+
+  async getPresignedUrl(req: Request, res: Response, next: NextFunction) {
+    try {
+      const fileId = req.params.id as string;
+      const result = await filesService.getPresignedDownloadUrl(fileId, req.user!);
+      res.status(200).json({ data: result });
+    } catch (err) {
+      next(err);
+    }
+  }
 }
 
 export const filesController = new FilesController();

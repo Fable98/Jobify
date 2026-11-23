@@ -308,6 +308,38 @@
     - `npm run test:e2e`: 2 Playwright journeys passed in 6.1s
     - `npm run build`: Production builds passed cleanly
 
+### Suggestion Roadmap: Phase 1 Implementation (Operational Stability & Cloud Scale)
+- Status: **COMPLETED**
+- Implemented production enhancements specified in `Docs/suggestion.md`:
+  1. **Cloud Object Storage (S3 / Cloudflare R2 / MinIO)**:
+     - Implemented `S3StorageProvider` implementing `StorageProvider` with `@aws-sdk/client-s3` and `@aws-sdk/s3-request-presigner`.
+     - Supports direct upload, streaming, deletion, and presigned access URLs (`GET /api/v1/files/:id/url`).
+     - Added dynamic `createStorageProvider()` factory toggling between `LocalStorageProvider` and `S3StorageProvider`.
+  2. **Distributed Redis Session Caching (Cache-Aside)**:
+     - Introduced `ioredis` service with graceful reconnection and failover.
+     - Implemented session caching in `requireAuth` (`jobify:session:<hash>`), eliminating repetitive PostgreSQL `findUnique` session queries.
+     - Added cache invalidation on logout, password change, and account suspension.
+  3. **Transactional Email Service**:
+     - Created `EmailService` supporting Resend API with local development formatted log fallback.
+     - Integrated transactional lifecycle emails:
+       - Welcome email on registration.
+       - Candidate application receipt.
+       - Employer new candidate alert.
+       - Application status change alert.
+  4. **Structured JSON Logging & Observability (Pino)**:
+     - Installed `pino` and `pino-http` with millisecond ISO timestamps and log levels.
+     - Injected request correlation ID (`X-Request-Id`) middleware tracing requests and errors.
+     - Configured centralized error handler to log unhandled server exceptions via `logger.error`.
+  5. **Enhanced Tokenized Multi-Term Job Search**:
+     - Upgraded job search in `jobs.service.ts` to tokenize queries across title, company, location, description, requirements, and responsibilities.
+  6. **GDPR Data Portability & Compliance**:
+     - Implemented `GET /api/v1/users/me/export` bundling user profile, applications, saved jobs, and files while stripping sensitive credentials.
+- Verification results:
+  - `npm run typecheck`: Passed (0 errors)
+  - `npm run lint`: Passed (0 errors, 0 warnings)
+  - `npm test`: All 84 tests passed across 8 test suites in 3.73s
+
+
 
 
 

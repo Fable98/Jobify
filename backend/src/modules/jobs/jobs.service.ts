@@ -92,14 +92,19 @@ export class JobsService {
     ];
 
     if (search) {
-      andConditions.push({
-        OR: [
-          { title: { contains: search, mode: 'insensitive' } },
-          { location: { contains: search, mode: 'insensitive' } },
-          { company: { name: { contains: search, mode: 'insensitive' } } },
-          { description: { contains: search, mode: 'insensitive' } },
-        ],
-      });
+      const terms = search.trim().split(/\s+/).filter(Boolean);
+      for (const term of terms) {
+        andConditions.push({
+          OR: [
+            { title: { contains: term, mode: 'insensitive' } },
+            { location: { contains: term, mode: 'insensitive' } },
+            { company: { name: { contains: term, mode: 'insensitive' } } },
+            { description: { contains: term, mode: 'insensitive' } },
+            { requirements: { contains: term, mode: 'insensitive' } },
+            { responsibilities: { contains: term, mode: 'insensitive' } },
+          ],
+        });
+      }
     }
 
     if (location) {

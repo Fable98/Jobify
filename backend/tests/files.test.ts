@@ -143,5 +143,23 @@ describe('Files Module & Storage Security', () => {
 
       expect(res.status).toBe(403);
     });
+
+    it('returns authorized presigned / access URL for resume', async () => {
+      const res = await request(app)
+        .get(`/api/v1/files/${alexResumeId}/url`)
+        .set('Cookie', alexSeekerCookie);
+
+      expect(res.status).toBe(200);
+      expect(res.body.data.url).toBeDefined();
+      expect(res.body.data.expiresInSeconds).toBe(900);
+    });
+
+    it('blocks unauthorized seeker from getting presigned URL for another resume', async () => {
+      const res = await request(app)
+        .get(`/api/v1/files/${alexResumeId}/url`)
+        .set('Cookie', mayaSeekerCookie);
+
+      expect(res.status).toBe(403);
+    });
   });
 });
