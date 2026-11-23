@@ -135,18 +135,24 @@ describe('Applications & Saved Jobs Module', () => {
     let testAppId: string;
 
     beforeAll(async () => {
-      // Find or create a fresh pending application for Maya
+      const claire = await prisma.user.findUnique({
+        where: { email: 'claire.junior@jobify.dev' },
+        include: { files: true },
+      });
+
       const testJob = await prisma.job.findFirst({
         where: {
           company: { slug: 'techflow-solutions' },
           status: 'PUBLISHED',
-          applications: { none: { applicant: { email: 'claire.junior@jobify.dev' } } },
         },
       });
 
-      const claire = await prisma.user.findUnique({
-        where: { email: 'claire.junior@jobify.dev' },
-        include: { files: true },
+      // Clean up any existing application for Claire on this job to prevent conflicts
+      await prisma.application.deleteMany({
+        where: {
+          jobId: testJob!.id,
+          applicantId: claire!.id,
+        },
       });
 
       const appRecord = await prisma.application.create({
